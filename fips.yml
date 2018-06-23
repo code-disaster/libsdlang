@@ -1,0 +1,9 @@
+---
+exports:
+  header-dirs:
+    - .
+  modules:
+    sdlang: .
+run:
+  parser:
+    cwd: samples
