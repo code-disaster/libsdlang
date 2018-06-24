@@ -10,9 +10,21 @@ Surprisingly I wasn't able to find a C/C++ implementation of this intriguing lit
 
 > Note: while implementing the grammar is almost done, I just started working on the library API - so it may change, and be extended and documented (, and become awesome) in the future.
 
+### Source code
+
 It's simple. Add `sdlang.c` and `sdlang.h` to your project. The API is pretty slim. Just skim through the header, and maybe `samples/parser.c`, and you should be ready to go.
 
 The provided `CMakeLists.txt` is written to be used with [fips](http://floooh.github.io/fips/index.html), *the friendly CMake wrapper*. It won't work with regular CMake.
+
+### Token API
+
+Have a look at `samples/parser.c`. In summary, `sdlang_parse()` takes a `fread()`-style function as a parameter, and produces a series of `sdlang_emit_token()` callbacks. Read the **Grammar** section below, or the sample code, for some (current) limitations.
+
+You can hook into `sdlang_report_error()` to capture error messages.
+
+### Threading
+
+The parser is thread-safe.
 
 ## The nasty details
 
@@ -24,18 +36,18 @@ Additionally, I've made some minor adjustments to the SDLang grammar for conveni
 
 - For delimiting single-quoted strings, `'` is supported in addition to backticks. For real, who enjoys typing backticks?
 - Integers and floats optionally start with a `+` sign. Also, neither the SDLang page nor the VS Code plugin for syntax highlighting care about the existence of negative numbers, so I took the liberty to allow prefixing numbers with the `-` sign, too.
+- Integer and float suffixes can be lower case, so both `1.23F` and `1.23f` are supported.
 - Floats can also be written in e-notation, for example `-2.34e-5f`.
-- The end of a node is evaluated rather lazily. Closing brackets and semicolons generate an "end node" token. Non-wrapping newlines do too, but all of them, even for empty lines, which means that there can be multiple "end node" tokens in a row.
 
 Known bugs:
 
-- Semicolons to end a node are recognised but not enforced by the parser, which means these two lines are treated the same - basically, a new node name does end the previous node implicitly:<br>
-  - `title "Some title"; author "Peter Parker"; alter-ego "Spiderman"`<br>
+- The end of a node is evaluated rather lazily. Closing brackets and semicolons generate an "end node" token. Non-wrapping newlines do too, but all of them, even for empty lines, which means that there can be multiple "end node" tokens in a row.
+- Semicolons to end a node are recognised but not enforced by the parser, which means these two lines are treated the same - basically, a new node name does end the previous node implicitly:
+  - `title "Some title"; author "Peter Parker"; alter-ego "Spiderman"`
   - `title "Some title" author "Peter Parker" alter-ego "Spiderman"`
 
 Some value formats are not implemented yet:
 
-- 128-bit integers
 - date/time formats
 - Base64 encoded binary data
 - I'll probably add hexadecimal numbers. I like them.
@@ -46,6 +58,10 @@ Some value formats are not implemented yet:
 
 With less than 1.000 lines of code, the generated code is very compact, and has no external dependencies.
 
-The library doesn't allocate *any* memory. By default, it only uses a few hundred bytes of stack memory to store state and buffer parser input. You can predefine `SDLANG_PARSE_BUFFERSIZE` to increase the buffer size, which is probably only required when using large literals or string values.
+The library doesn't allocate *any* memory. By default, it only uses a few hundred bytes of stack memory to store state and buffer input. You can predefine `SDLANG_PARSE_BUFFERSIZE` to increase the buffer size, which is probably only required when using large literals or string values.
 
 The parser uses a small stack frame for parsing nested SDLang blocks. Stack size can be changed by predefining `SDLANG_PARSE_STACKSIZE`.
+
+The stack frame **does not grow** - the parser will generate a `sdlang_report_error()` call when full, but `SDLANG_ASSERT()` or crash on an overflow.
+
+> I'd like to stop the parser in such scenario, but didn't yet find a clean way to do so.

@@ -10,20 +10,20 @@
 #include <stdio.h>
 
 
-#line 113 "sdlang.rl"
+#line 122 "sdlang.rl"
 
 
 
 #line 18 "sdlang.c"
-static const int sdlang_start = 18;
+static const int sdlang_start = 19;
 static const int sdlang_error = 0;
 
 static const int sdlang_en_c_comment = 1;
-static const int sdlang_en_block = 20;
-static const int sdlang_en_main = 18;
+static const int sdlang_en_block = 21;
+static const int sdlang_en_main = 19;
 
 
-#line 116 "sdlang.rl"
+#line 125 "sdlang.rl"
 
 static void emit_token(const struct sdlang_token_t* token)
 {
@@ -52,6 +52,7 @@ static void emit(enum sdlang_token_type_t type, const char* ts, const char* te, 
 
     case SDLANG_TOKEN_INT32:
     case SDLANG_TOKEN_INT64:
+    case SDLANG_TOKEN_INT128:
     case SDLANG_TOKEN_FLOAT32:
     case SDLANG_TOKEN_FLOAT64:
         /* strip leading '+' */
@@ -125,7 +126,7 @@ int sdlang_parse(size_t (*stream)(void* ptr, size_t size, size_t nmemb))
     int done = 0;
 
     
-#line 129 "sdlang.c"
+#line 130 "sdlang.c"
 	{
 	cs = sdlang_start;
 	top = 0;
@@ -134,7 +135,7 @@ int sdlang_parse(size_t (*stream)(void* ptr, size_t size, size_t nmemb))
 	act = 0;
 	}
 
-#line 217 "sdlang.rl"
+#line 227 "sdlang.rl"
 
     while (!done)
     {
@@ -157,7 +158,7 @@ int sdlang_parse(size_t (*stream)(void* ptr, size_t size, size_t nmemb))
         }
 
         
-#line 161 "sdlang.c"
+#line 162 "sdlang.c"
 	{
 	if ( p == pe )
 		goto _test_eof;
@@ -165,12 +166,12 @@ int sdlang_parse(size_t (*stream)(void* ptr, size_t size, size_t nmemb))
 
 _again:
 	switch ( cs ) {
-		case 18: goto st18;
+		case 19: goto st19;
 		case 1: goto st1;
 		case 2: goto st2;
-		case 19: goto st19;
-		case 0: goto st0;
 		case 20: goto st20;
+		case 0: goto st0;
+		case 21: goto st21;
 		case 3: goto st3;
 		case 4: goto st4;
 		case 5: goto st5;
@@ -179,19 +180,19 @@ _again:
 		case 8: goto st8;
 		case 9: goto st9;
 		case 10: goto st10;
-		case 21: goto st21;
+		case 22: goto st22;
 		case 11: goto st11;
 		case 12: goto st12;
-		case 22: goto st22;
 		case 23: goto st23;
-		case 13: goto st13;
 		case 24: goto st24;
+		case 13: goto st13;
 		case 14: goto st14;
-		case 15: goto st15;
 		case 25: goto st25;
+		case 15: goto st15;
 		case 16: goto st16;
-		case 17: goto st17;
 		case 26: goto st26;
+		case 17: goto st17;
+		case 18: goto st18;
 		case 27: goto st27;
 		case 28: goto st28;
 		case 29: goto st29;
@@ -204,6 +205,7 @@ _again:
 		case 36: goto st36;
 		case 37: goto st37;
 		case 38: goto st38;
+		case 39: goto st39;
 	default: break;
 	}
 
@@ -212,24 +214,24 @@ _again:
 _resume:
 	switch ( cs )
 	{
-tr28:
-#line 110 "sdlang.rl"
+tr29:
+#line 119 "sdlang.rl"
 	{te = p+1;{p--; {
         check_stack_size(top, curline);
-    {stack[top++] = 18; goto st20;}}}}
-	goto st18;
-st18:
+    {stack[top++] = 19; goto st21;}}}}
+	goto st19;
+st19:
 #line 1 "NONE"
 	{ts = 0;}
 	if ( ++p == pe )
-		goto _test_eof18;
-case 18:
+		goto _test_eof19;
+case 19:
 #line 1 "NONE"
 	{ts = p;}
-#line 230 "sdlang.c"
-	goto tr28;
+#line 232 "sdlang.c"
+	goto tr29;
 tr1:
-#line 18 "sdlang.rl"
+#line 20 "sdlang.rl"
 	{curline += 1;}
 	goto st1;
 st1:
@@ -238,7 +240,7 @@ st1:
 	if ( ++p == pe )
 		goto _test_eof1;
 case 1:
-#line 242 "sdlang.c"
+#line 244 "sdlang.c"
 	switch( (*p) ) {
 		case 10: goto tr1;
 		case 42: goto st2;
@@ -255,157 +257,161 @@ case 2:
 	}
 	goto st1;
 tr3:
-#line 45 "sdlang.rl"
-	{{goto st20;}}
-	goto st19;
-st19:
+#line 50 "sdlang.rl"
+	{{goto st21;}}
+	goto st20;
+st20:
 	if ( ++p == pe )
-		goto _test_eof19;
-case 19:
-#line 266 "sdlang.c"
+		goto _test_eof20;
+case 20:
+#line 268 "sdlang.c"
 	goto st0;
 st0:
 cs = 0;
 	goto _out;
 tr4:
-#line 18 "sdlang.rl"
+#line 20 "sdlang.rl"
 	{curline += 1;}
-#line 102 "sdlang.rl"
+#line 111 "sdlang.rl"
 	{te = p+1;{emit(SDLANG_TOKEN_NODE_END, NULL, NULL, curline);}}
-	goto st20;
+	goto st21;
 tr8:
-#line 67 "sdlang.rl"
+#line 76 "sdlang.rl"
 	{te = p+1;{emit(SDLANG_TOKEN_STRING, ts, te, curline);}}
-	goto st20;
+	goto st21;
 tr11:
-#line 18 "sdlang.rl"
+#line 20 "sdlang.rl"
 	{curline += 1;}
-#line 98 "sdlang.rl"
+#line 107 "sdlang.rl"
 	{te = p+1;}
-	goto st20;
+	goto st21;
 tr19:
 #line 1 "NONE"
 	{	switch( act ) {
 	case 5:
 	{{p = ((te))-1;}emit(SDLANG_TOKEN_FLOAT64, ts, te, curline);}
 	break;
-	case 7:
+	case 8:
 	{{p = ((te))-1;}emit(SDLANG_TOKEN_INT32, ts, te, curline);}
 	break;
-	case 8:
+	case 9:
 	{{p = ((te))-1;}emit(SDLANG_TOKEN_TRUE, ts, te, curline);}
 	break;
-	case 9:
+	case 10:
 	{{p = ((te))-1;}emit(SDLANG_TOKEN_FALSE, ts, te, curline);}
 	break;
-	case 10:
+	case 11:
 	{{p = ((te))-1;}emit(SDLANG_TOKEN_NULL, ts, te, curline);}
 	break;
 	}
 	}
-	goto st20;
+	goto st21;
 tr22:
-#line 73 "sdlang.rl"
+#line 83 "sdlang.rl"
 	{{p = ((te))-1;}{emit(SDLANG_TOKEN_INT32, ts, te, curline);}}
-	goto st20;
+	goto st21;
 tr25:
-#line 99 "sdlang.rl"
-	{te = p+1;{{goto st1;}}}
-	goto st20;
+#line 82 "sdlang.rl"
+	{te = p+1;{emit(SDLANG_TOKEN_INT128, ts, te, curline);}}
+	goto st21;
 tr26:
-#line 18 "sdlang.rl"
+#line 108 "sdlang.rl"
+	{te = p+1;{{goto st1;}}}
+	goto st21;
+tr27:
+#line 20 "sdlang.rl"
 	{curline += 1;}
-#line 101 "sdlang.rl"
+#line 110 "sdlang.rl"
 	{te = p+1;}
-	goto st20;
-tr29:
-#line 104 "sdlang.rl"
+	goto st21;
+tr30:
+#line 113 "sdlang.rl"
 	{te = p+1;}
-	goto st20;
-tr34:
-#line 86 "sdlang.rl"
+	goto st21;
+tr35:
+#line 95 "sdlang.rl"
 	{te = p+1;{emit(SDLANG_TOKEN_NODE_END, ts, te, curline);}}
-	goto st20;
-tr41:
-#line 88 "sdlang.rl"
+	goto st21;
+tr42:
+#line 97 "sdlang.rl"
 	{te = p+1;{
             emit(SDLANG_TOKEN_BLOCK, ts, te, curline);
             {
         check_stack_size(top, curline);
-    {stack[top++] = 20; goto st20;}}
+    {stack[top++] = 21; goto st21;}}
         }}
-	goto st20;
-tr42:
-#line 93 "sdlang.rl"
+	goto st21;
+tr43:
+#line 102 "sdlang.rl"
 	{te = p+1;{
             emit(SDLANG_TOKEN_BLOCK_END, ts, te, curline);
             {cs = stack[--top];goto _again;}
         }}
-	goto st20;
-tr43:
-#line 70 "sdlang.rl"
-	{te = p;p--;{emit(SDLANG_TOKEN_FLOAT64, ts, te, curline);}}
-	goto st20;
+	goto st21;
 tr44:
-#line 69 "sdlang.rl"
-	{te = p+1;{emit(SDLANG_TOKEN_FLOAT32, ts, te, curline);}}
-	goto st20;
+#line 79 "sdlang.rl"
+	{te = p;p--;{emit(SDLANG_TOKEN_FLOAT64, ts, te, curline);}}
+	goto st21;
 tr45:
-#line 73 "sdlang.rl"
-	{te = p;p--;{emit(SDLANG_TOKEN_INT32, ts, te, curline);}}
-	goto st20;
+#line 78 "sdlang.rl"
+	{te = p+1;{emit(SDLANG_TOKEN_FLOAT32, ts, te, curline);}}
+	goto st21;
 tr46:
-#line 72 "sdlang.rl"
-	{te = p+1;{emit(SDLANG_TOKEN_INT64, ts, te, curline);}}
-	goto st20;
-tr47:
-#line 65 "sdlang.rl"
-	{te = p;p--;{emit(SDLANG_TOKEN_NODE, ts, te, curline);}}
-	goto st20;
+#line 83 "sdlang.rl"
+	{te = p;p--;{emit(SDLANG_TOKEN_INT32, ts, te, curline);}}
+	goto st21;
 tr48:
-#line 63 "sdlang.rl"
+#line 81 "sdlang.rl"
+	{te = p+1;{emit(SDLANG_TOKEN_INT64, ts, te, curline);}}
+	goto st21;
+tr49:
+#line 74 "sdlang.rl"
+	{te = p;p--;{emit(SDLANG_TOKEN_NODE, ts, te, curline);}}
+	goto st21;
+tr50:
+#line 72 "sdlang.rl"
 	{te = p+1;{emit(SDLANG_TOKEN_ATTRIBUTE, ts, te, curline);}}
-	goto st20;
-st20:
+	goto st21;
+st21:
 #line 1 "NONE"
 	{ts = 0;}
 	if ( ++p == pe )
-		goto _test_eof20;
-case 20:
+		goto _test_eof21;
+case 21:
 #line 1 "NONE"
 	{ts = p;}
-#line 378 "sdlang.c"
+#line 384 "sdlang.c"
 	switch( (*p) ) {
-		case 9: goto tr29;
+		case 9: goto tr30;
 		case 10: goto tr4;
 		case 13: goto st3;
-		case 32: goto tr29;
+		case 32: goto tr30;
 		case 34: goto st4;
 		case 35: goto st6;
 		case 39: goto st7;
 		case 43: goto st9;
-		case 45: goto st14;
+		case 45: goto st15;
 		case 46: goto st10;
-		case 47: goto st15;
+		case 47: goto st16;
 		case 48: goto tr16;
-		case 59: goto tr34;
-		case 92: goto st16;
+		case 59: goto tr35;
+		case 92: goto st17;
 		case 96: goto st7;
-		case 102: goto st26;
-		case 110: goto st31;
-		case 111: goto st34;
-		case 116: goto st36;
-		case 123: goto tr41;
-		case 125: goto tr42;
+		case 102: goto st27;
+		case 110: goto st32;
+		case 111: goto st35;
+		case 116: goto st37;
+		case 123: goto tr42;
+		case 125: goto tr43;
 	}
 	if ( (*p) < 65 ) {
 		if ( 49 <= (*p) && (*p) <= 57 )
 			goto tr17;
 	} else if ( (*p) > 90 ) {
 		if ( 97 <= (*p) && (*p) <= 122 )
-			goto st25;
+			goto st26;
 	} else
-		goto st25;
+		goto st26;
 	goto st0;
 st3:
 	if ( ++p == pe )
@@ -415,14 +421,14 @@ case 3:
 		goto tr4;
 	goto st0;
 tr7:
-#line 18 "sdlang.rl"
+#line 20 "sdlang.rl"
 	{curline += 1;}
 	goto st4;
 st4:
 	if ( ++p == pe )
 		goto _test_eof4;
 case 4:
-#line 426 "sdlang.c"
+#line 432 "sdlang.c"
 	switch( (*p) ) {
 		case 10: goto tr7;
 		case 34: goto tr8;
@@ -444,14 +450,14 @@ case 6:
 		goto tr11;
 	goto st6;
 tr13:
-#line 18 "sdlang.rl"
+#line 20 "sdlang.rl"
 	{curline += 1;}
 	goto st7;
 st7:
 	if ( ++p == pe )
 		goto _test_eof7;
 case 7:
-#line 455 "sdlang.c"
+#line 461 "sdlang.c"
 	switch( (*p) ) {
 		case 10: goto tr13;
 		case 39: goto tr8;
@@ -487,23 +493,23 @@ case 10:
 tr18:
 #line 1 "NONE"
 	{te = p+1;}
-#line 70 "sdlang.rl"
+#line 79 "sdlang.rl"
 	{act = 5;}
-	goto st21;
-st21:
+	goto st22;
+st22:
 	if ( ++p == pe )
-		goto _test_eof21;
-case 21:
-#line 498 "sdlang.c"
+		goto _test_eof22;
+case 22:
+#line 504 "sdlang.c"
 	switch( (*p) ) {
 		case 69: goto st11;
-		case 70: goto tr44;
+		case 70: goto tr45;
 		case 101: goto st11;
-		case 102: goto tr44;
+		case 102: goto tr45;
 	}
 	if ( 48 <= (*p) && (*p) <= 57 )
 		goto tr18;
-	goto tr43;
+	goto tr44;
 st11:
 	if ( ++p == pe )
 		goto _test_eof11;
@@ -513,47 +519,49 @@ case 11:
 		case 45: goto st12;
 	}
 	if ( 48 <= (*p) && (*p) <= 57 )
-		goto st22;
+		goto st23;
 	goto tr19;
 st12:
 	if ( ++p == pe )
 		goto _test_eof12;
 case 12:
 	if ( 48 <= (*p) && (*p) <= 57 )
-		goto st22;
+		goto st23;
 	goto tr19;
-st22:
-	if ( ++p == pe )
-		goto _test_eof22;
-case 22:
-	switch( (*p) ) {
-		case 70: goto tr44;
-		case 102: goto tr44;
-	}
-	if ( 48 <= (*p) && (*p) <= 57 )
-		goto st22;
-	goto tr43;
-tr16:
-#line 1 "NONE"
-	{te = p+1;}
-#line 73 "sdlang.rl"
-	{act = 7;}
-	goto st23;
 st23:
 	if ( ++p == pe )
 		goto _test_eof23;
 case 23:
-#line 547 "sdlang.c"
+	switch( (*p) ) {
+		case 70: goto tr45;
+		case 102: goto tr45;
+	}
+	if ( 48 <= (*p) && (*p) <= 57 )
+		goto st23;
+	goto tr44;
+tr16:
+#line 1 "NONE"
+	{te = p+1;}
+#line 83 "sdlang.rl"
+	{act = 8;}
+	goto st24;
+st24:
+	if ( ++p == pe )
+		goto _test_eof24;
+case 24:
+#line 553 "sdlang.c"
 	switch( (*p) ) {
 		case 46: goto tr18;
+		case 66: goto st14;
 		case 69: goto st11;
-		case 76: goto tr46;
+		case 76: goto tr48;
+		case 98: goto st14;
 		case 101: goto st11;
-		case 108: goto tr46;
+		case 108: goto tr48;
 	}
 	if ( 48 <= (*p) && (*p) <= 57 )
 		goto st13;
-	goto tr45;
+	goto tr46;
 st13:
 	if ( ++p == pe )
 		goto _test_eof13;
@@ -566,31 +574,42 @@ case 13:
 	if ( 48 <= (*p) && (*p) <= 57 )
 		goto st13;
 	goto tr22;
-tr17:
-#line 1 "NONE"
-	{te = p+1;}
-#line 73 "sdlang.rl"
-	{act = 7;}
-	goto st24;
-st24:
-	if ( ++p == pe )
-		goto _test_eof24;
-case 24:
-#line 580 "sdlang.c"
-	switch( (*p) ) {
-		case 46: goto tr18;
-		case 69: goto st11;
-		case 76: goto tr46;
-		case 101: goto st11;
-		case 108: goto tr46;
-	}
-	if ( 48 <= (*p) && (*p) <= 57 )
-		goto tr17;
-	goto tr45;
 st14:
 	if ( ++p == pe )
 		goto _test_eof14;
 case 14:
+	switch( (*p) ) {
+		case 68: goto tr25;
+		case 100: goto tr25;
+	}
+	goto tr22;
+tr17:
+#line 1 "NONE"
+	{te = p+1;}
+#line 83 "sdlang.rl"
+	{act = 8;}
+	goto st25;
+st25:
+	if ( ++p == pe )
+		goto _test_eof25;
+case 25:
+#line 597 "sdlang.c"
+	switch( (*p) ) {
+		case 46: goto tr18;
+		case 66: goto st14;
+		case 69: goto st11;
+		case 76: goto tr48;
+		case 98: goto st14;
+		case 101: goto st11;
+		case 108: goto tr48;
+	}
+	if ( 48 <= (*p) && (*p) <= 57 )
+		goto tr17;
+	goto tr46;
+st15:
+	if ( ++p == pe )
+		goto _test_eof15;
+case 15:
 	switch( (*p) ) {
 		case 45: goto st6;
 		case 46: goto st10;
@@ -599,362 +618,362 @@ case 14:
 	if ( 49 <= (*p) && (*p) <= 57 )
 		goto tr17;
 	goto st0;
-st15:
-	if ( ++p == pe )
-		goto _test_eof15;
-case 15:
-	switch( (*p) ) {
-		case 42: goto tr25;
-		case 47: goto st6;
-	}
-	goto st0;
-st25:
-	if ( ++p == pe )
-		goto _test_eof25;
-case 25:
-	switch( (*p) ) {
-		case 36: goto st25;
-		case 61: goto tr48;
-		case 95: goto st25;
-	}
-	if ( (*p) < 48 ) {
-		if ( 45 <= (*p) && (*p) <= 46 )
-			goto st25;
-	} else if ( (*p) > 58 ) {
-		if ( (*p) > 90 ) {
-			if ( 97 <= (*p) && (*p) <= 122 )
-				goto st25;
-		} else if ( (*p) >= 65 )
-			goto st25;
-	} else
-		goto st25;
-	goto tr47;
 st16:
 	if ( ++p == pe )
 		goto _test_eof16;
 case 16:
 	switch( (*p) ) {
-		case 10: goto tr26;
-		case 13: goto st17;
+		case 42: goto tr26;
+		case 47: goto st6;
 	}
-	goto st0;
-st17:
-	if ( ++p == pe )
-		goto _test_eof17;
-case 17:
-	if ( (*p) == 10 )
-		goto tr26;
 	goto st0;
 st26:
 	if ( ++p == pe )
 		goto _test_eof26;
 case 26:
 	switch( (*p) ) {
-		case 36: goto st25;
-		case 61: goto tr48;
-		case 95: goto st25;
-		case 97: goto st27;
+		case 36: goto st26;
+		case 61: goto tr50;
+		case 95: goto st26;
 	}
 	if ( (*p) < 48 ) {
 		if ( 45 <= (*p) && (*p) <= 46 )
-			goto st25;
+			goto st26;
 	} else if ( (*p) > 58 ) {
 		if ( (*p) > 90 ) {
-			if ( 98 <= (*p) && (*p) <= 122 )
-				goto st25;
+			if ( 97 <= (*p) && (*p) <= 122 )
+				goto st26;
 		} else if ( (*p) >= 65 )
-			goto st25;
+			goto st26;
 	} else
-		goto st25;
-	goto tr47;
+		goto st26;
+	goto tr49;
+st17:
+	if ( ++p == pe )
+		goto _test_eof17;
+case 17:
+	switch( (*p) ) {
+		case 10: goto tr27;
+		case 13: goto st18;
+	}
+	goto st0;
+st18:
+	if ( ++p == pe )
+		goto _test_eof18;
+case 18:
+	if ( (*p) == 10 )
+		goto tr27;
+	goto st0;
 st27:
 	if ( ++p == pe )
 		goto _test_eof27;
 case 27:
 	switch( (*p) ) {
-		case 36: goto st25;
-		case 61: goto tr48;
-		case 95: goto st25;
-		case 108: goto st28;
+		case 36: goto st26;
+		case 61: goto tr50;
+		case 95: goto st26;
+		case 97: goto st28;
 	}
 	if ( (*p) < 48 ) {
 		if ( 45 <= (*p) && (*p) <= 46 )
-			goto st25;
+			goto st26;
 	} else if ( (*p) > 58 ) {
 		if ( (*p) > 90 ) {
-			if ( 97 <= (*p) && (*p) <= 122 )
-				goto st25;
+			if ( 98 <= (*p) && (*p) <= 122 )
+				goto st26;
 		} else if ( (*p) >= 65 )
-			goto st25;
+			goto st26;
 	} else
-		goto st25;
-	goto tr47;
+		goto st26;
+	goto tr49;
 st28:
 	if ( ++p == pe )
 		goto _test_eof28;
 case 28:
 	switch( (*p) ) {
-		case 36: goto st25;
-		case 61: goto tr48;
-		case 95: goto st25;
-		case 115: goto st29;
+		case 36: goto st26;
+		case 61: goto tr50;
+		case 95: goto st26;
+		case 108: goto st29;
 	}
 	if ( (*p) < 48 ) {
 		if ( 45 <= (*p) && (*p) <= 46 )
-			goto st25;
+			goto st26;
 	} else if ( (*p) > 58 ) {
 		if ( (*p) > 90 ) {
 			if ( 97 <= (*p) && (*p) <= 122 )
-				goto st25;
+				goto st26;
 		} else if ( (*p) >= 65 )
-			goto st25;
+			goto st26;
 	} else
-		goto st25;
-	goto tr47;
+		goto st26;
+	goto tr49;
 st29:
 	if ( ++p == pe )
 		goto _test_eof29;
 case 29:
 	switch( (*p) ) {
-		case 36: goto st25;
-		case 61: goto tr48;
-		case 95: goto st25;
-		case 101: goto tr52;
+		case 36: goto st26;
+		case 61: goto tr50;
+		case 95: goto st26;
+		case 115: goto st30;
 	}
 	if ( (*p) < 48 ) {
 		if ( 45 <= (*p) && (*p) <= 46 )
-			goto st25;
+			goto st26;
 	} else if ( (*p) > 58 ) {
 		if ( (*p) > 90 ) {
 			if ( 97 <= (*p) && (*p) <= 122 )
-				goto st25;
+				goto st26;
 		} else if ( (*p) >= 65 )
-			goto st25;
+			goto st26;
 	} else
-		goto st25;
-	goto tr47;
-tr52:
-#line 1 "NONE"
-	{te = p+1;}
-#line 76 "sdlang.rl"
-	{act = 9;}
-	goto st30;
-tr55:
-#line 1 "NONE"
-	{te = p+1;}
-#line 78 "sdlang.rl"
-	{act = 10;}
-	goto st30;
-tr57:
-#line 1 "NONE"
-	{te = p+1;}
-#line 75 "sdlang.rl"
-	{act = 8;}
-	goto st30;
+		goto st26;
+	goto tr49;
 st30:
 	if ( ++p == pe )
 		goto _test_eof30;
 case 30:
-#line 759 "sdlang.c"
 	switch( (*p) ) {
-		case 36: goto st25;
-		case 95: goto st25;
+		case 36: goto st26;
+		case 61: goto tr50;
+		case 95: goto st26;
+		case 101: goto tr54;
 	}
 	if ( (*p) < 48 ) {
 		if ( 45 <= (*p) && (*p) <= 46 )
-			goto st25;
+			goto st26;
 	} else if ( (*p) > 58 ) {
 		if ( (*p) > 90 ) {
 			if ( 97 <= (*p) && (*p) <= 122 )
-				goto st25;
+				goto st26;
 		} else if ( (*p) >= 65 )
-			goto st25;
+			goto st26;
 	} else
-		goto st25;
-	goto tr19;
+		goto st26;
+	goto tr49;
+tr54:
+#line 1 "NONE"
+	{te = p+1;}
+#line 86 "sdlang.rl"
+	{act = 10;}
+	goto st31;
+tr57:
+#line 1 "NONE"
+	{te = p+1;}
+#line 88 "sdlang.rl"
+	{act = 11;}
+	goto st31;
+tr59:
+#line 1 "NONE"
+	{te = p+1;}
+#line 85 "sdlang.rl"
+	{act = 9;}
+	goto st31;
 st31:
 	if ( ++p == pe )
 		goto _test_eof31;
 case 31:
+#line 778 "sdlang.c"
 	switch( (*p) ) {
-		case 36: goto st25;
-		case 61: goto tr48;
-		case 95: goto st25;
-		case 117: goto st32;
+		case 36: goto st26;
+		case 95: goto st26;
 	}
 	if ( (*p) < 48 ) {
 		if ( 45 <= (*p) && (*p) <= 46 )
-			goto st25;
+			goto st26;
 	} else if ( (*p) > 58 ) {
 		if ( (*p) > 90 ) {
 			if ( 97 <= (*p) && (*p) <= 122 )
-				goto st25;
+				goto st26;
 		} else if ( (*p) >= 65 )
-			goto st25;
+			goto st26;
 	} else
-		goto st25;
-	goto tr47;
+		goto st26;
+	goto tr19;
 st32:
 	if ( ++p == pe )
 		goto _test_eof32;
 case 32:
 	switch( (*p) ) {
-		case 36: goto st25;
-		case 61: goto tr48;
-		case 95: goto st25;
-		case 108: goto st33;
+		case 36: goto st26;
+		case 61: goto tr50;
+		case 95: goto st26;
+		case 117: goto st33;
 	}
 	if ( (*p) < 48 ) {
 		if ( 45 <= (*p) && (*p) <= 46 )
-			goto st25;
+			goto st26;
 	} else if ( (*p) > 58 ) {
 		if ( (*p) > 90 ) {
 			if ( 97 <= (*p) && (*p) <= 122 )
-				goto st25;
+				goto st26;
 		} else if ( (*p) >= 65 )
-			goto st25;
+			goto st26;
 	} else
-		goto st25;
-	goto tr47;
+		goto st26;
+	goto tr49;
 st33:
 	if ( ++p == pe )
 		goto _test_eof33;
 case 33:
 	switch( (*p) ) {
-		case 36: goto st25;
-		case 61: goto tr48;
-		case 95: goto st25;
-		case 108: goto tr55;
+		case 36: goto st26;
+		case 61: goto tr50;
+		case 95: goto st26;
+		case 108: goto st34;
 	}
 	if ( (*p) < 48 ) {
 		if ( 45 <= (*p) && (*p) <= 46 )
-			goto st25;
+			goto st26;
 	} else if ( (*p) > 58 ) {
 		if ( (*p) > 90 ) {
 			if ( 97 <= (*p) && (*p) <= 122 )
-				goto st25;
+				goto st26;
 		} else if ( (*p) >= 65 )
-			goto st25;
+			goto st26;
 	} else
-		goto st25;
-	goto tr47;
+		goto st26;
+	goto tr49;
 st34:
 	if ( ++p == pe )
 		goto _test_eof34;
 case 34:
 	switch( (*p) ) {
-		case 36: goto st25;
-		case 61: goto tr48;
-		case 95: goto st25;
-		case 102: goto st35;
-		case 110: goto tr57;
+		case 36: goto st26;
+		case 61: goto tr50;
+		case 95: goto st26;
+		case 108: goto tr57;
 	}
 	if ( (*p) < 48 ) {
 		if ( 45 <= (*p) && (*p) <= 46 )
-			goto st25;
+			goto st26;
 	} else if ( (*p) > 58 ) {
 		if ( (*p) > 90 ) {
 			if ( 97 <= (*p) && (*p) <= 122 )
-				goto st25;
+				goto st26;
 		} else if ( (*p) >= 65 )
-			goto st25;
+			goto st26;
 	} else
-		goto st25;
-	goto tr47;
+		goto st26;
+	goto tr49;
 st35:
 	if ( ++p == pe )
 		goto _test_eof35;
 case 35:
 	switch( (*p) ) {
-		case 36: goto st25;
-		case 61: goto tr48;
-		case 95: goto st25;
-		case 102: goto tr52;
+		case 36: goto st26;
+		case 61: goto tr50;
+		case 95: goto st26;
+		case 102: goto st36;
+		case 110: goto tr59;
 	}
 	if ( (*p) < 48 ) {
 		if ( 45 <= (*p) && (*p) <= 46 )
-			goto st25;
+			goto st26;
 	} else if ( (*p) > 58 ) {
 		if ( (*p) > 90 ) {
 			if ( 97 <= (*p) && (*p) <= 122 )
-				goto st25;
+				goto st26;
 		} else if ( (*p) >= 65 )
-			goto st25;
+			goto st26;
 	} else
-		goto st25;
-	goto tr47;
+		goto st26;
+	goto tr49;
 st36:
 	if ( ++p == pe )
 		goto _test_eof36;
 case 36:
 	switch( (*p) ) {
-		case 36: goto st25;
-		case 61: goto tr48;
-		case 95: goto st25;
-		case 114: goto st37;
+		case 36: goto st26;
+		case 61: goto tr50;
+		case 95: goto st26;
+		case 102: goto tr54;
 	}
 	if ( (*p) < 48 ) {
 		if ( 45 <= (*p) && (*p) <= 46 )
-			goto st25;
+			goto st26;
 	} else if ( (*p) > 58 ) {
 		if ( (*p) > 90 ) {
 			if ( 97 <= (*p) && (*p) <= 122 )
-				goto st25;
+				goto st26;
 		} else if ( (*p) >= 65 )
-			goto st25;
+			goto st26;
 	} else
-		goto st25;
-	goto tr47;
+		goto st26;
+	goto tr49;
 st37:
 	if ( ++p == pe )
 		goto _test_eof37;
 case 37:
 	switch( (*p) ) {
-		case 36: goto st25;
-		case 61: goto tr48;
-		case 95: goto st25;
-		case 117: goto st38;
+		case 36: goto st26;
+		case 61: goto tr50;
+		case 95: goto st26;
+		case 114: goto st38;
 	}
 	if ( (*p) < 48 ) {
 		if ( 45 <= (*p) && (*p) <= 46 )
-			goto st25;
+			goto st26;
 	} else if ( (*p) > 58 ) {
 		if ( (*p) > 90 ) {
 			if ( 97 <= (*p) && (*p) <= 122 )
-				goto st25;
+				goto st26;
 		} else if ( (*p) >= 65 )
-			goto st25;
+			goto st26;
 	} else
-		goto st25;
-	goto tr47;
+		goto st26;
+	goto tr49;
 st38:
 	if ( ++p == pe )
 		goto _test_eof38;
 case 38:
 	switch( (*p) ) {
-		case 36: goto st25;
-		case 61: goto tr48;
-		case 95: goto st25;
-		case 101: goto tr57;
+		case 36: goto st26;
+		case 61: goto tr50;
+		case 95: goto st26;
+		case 117: goto st39;
 	}
 	if ( (*p) < 48 ) {
 		if ( 45 <= (*p) && (*p) <= 46 )
-			goto st25;
+			goto st26;
 	} else if ( (*p) > 58 ) {
 		if ( (*p) > 90 ) {
 			if ( 97 <= (*p) && (*p) <= 122 )
-				goto st25;
+				goto st26;
 		} else if ( (*p) >= 65 )
-			goto st25;
+			goto st26;
 	} else
-		goto st25;
-	goto tr47;
+		goto st26;
+	goto tr49;
+st39:
+	if ( ++p == pe )
+		goto _test_eof39;
+case 39:
+	switch( (*p) ) {
+		case 36: goto st26;
+		case 61: goto tr50;
+		case 95: goto st26;
+		case 101: goto tr59;
 	}
-	_test_eof18: cs = 18; goto _test_eof; 
+	if ( (*p) < 48 ) {
+		if ( 45 <= (*p) && (*p) <= 46 )
+			goto st26;
+	} else if ( (*p) > 58 ) {
+		if ( (*p) > 90 ) {
+			if ( 97 <= (*p) && (*p) <= 122 )
+				goto st26;
+		} else if ( (*p) >= 65 )
+			goto st26;
+	} else
+		goto st26;
+	goto tr49;
+	}
+	_test_eof19: cs = 19; goto _test_eof; 
 	_test_eof1: cs = 1; goto _test_eof; 
 	_test_eof2: cs = 2; goto _test_eof; 
-	_test_eof19: cs = 19; goto _test_eof; 
 	_test_eof20: cs = 20; goto _test_eof; 
+	_test_eof21: cs = 21; goto _test_eof; 
 	_test_eof3: cs = 3; goto _test_eof; 
 	_test_eof4: cs = 4; goto _test_eof; 
 	_test_eof5: cs = 5; goto _test_eof; 
@@ -963,19 +982,19 @@ case 38:
 	_test_eof8: cs = 8; goto _test_eof; 
 	_test_eof9: cs = 9; goto _test_eof; 
 	_test_eof10: cs = 10; goto _test_eof; 
-	_test_eof21: cs = 21; goto _test_eof; 
+	_test_eof22: cs = 22; goto _test_eof; 
 	_test_eof11: cs = 11; goto _test_eof; 
 	_test_eof12: cs = 12; goto _test_eof; 
-	_test_eof22: cs = 22; goto _test_eof; 
 	_test_eof23: cs = 23; goto _test_eof; 
-	_test_eof13: cs = 13; goto _test_eof; 
 	_test_eof24: cs = 24; goto _test_eof; 
+	_test_eof13: cs = 13; goto _test_eof; 
 	_test_eof14: cs = 14; goto _test_eof; 
-	_test_eof15: cs = 15; goto _test_eof; 
 	_test_eof25: cs = 25; goto _test_eof; 
+	_test_eof15: cs = 15; goto _test_eof; 
 	_test_eof16: cs = 16; goto _test_eof; 
-	_test_eof17: cs = 17; goto _test_eof; 
 	_test_eof26: cs = 26; goto _test_eof; 
+	_test_eof17: cs = 17; goto _test_eof; 
+	_test_eof18: cs = 18; goto _test_eof; 
 	_test_eof27: cs = 27; goto _test_eof; 
 	_test_eof28: cs = 28; goto _test_eof; 
 	_test_eof29: cs = 29; goto _test_eof; 
@@ -988,39 +1007,41 @@ case 38:
 	_test_eof36: cs = 36; goto _test_eof; 
 	_test_eof37: cs = 37; goto _test_eof; 
 	_test_eof38: cs = 38; goto _test_eof; 
+	_test_eof39: cs = 39; goto _test_eof; 
 
 	_test_eof: {}
 	if ( p == eof )
 	{
 	switch ( cs ) {
-	case 21: goto tr43;
+	case 22: goto tr44;
 	case 11: goto tr19;
 	case 12: goto tr19;
-	case 22: goto tr43;
-	case 23: goto tr45;
+	case 23: goto tr44;
+	case 24: goto tr46;
 	case 13: goto tr22;
-	case 24: goto tr45;
-	case 25: goto tr47;
-	case 26: goto tr47;
-	case 27: goto tr47;
-	case 28: goto tr47;
-	case 29: goto tr47;
-	case 30: goto tr19;
-	case 31: goto tr47;
-	case 32: goto tr47;
-	case 33: goto tr47;
-	case 34: goto tr47;
-	case 35: goto tr47;
-	case 36: goto tr47;
-	case 37: goto tr47;
-	case 38: goto tr47;
+	case 14: goto tr22;
+	case 25: goto tr46;
+	case 26: goto tr49;
+	case 27: goto tr49;
+	case 28: goto tr49;
+	case 29: goto tr49;
+	case 30: goto tr49;
+	case 31: goto tr19;
+	case 32: goto tr49;
+	case 33: goto tr49;
+	case 34: goto tr49;
+	case 35: goto tr49;
+	case 36: goto tr49;
+	case 37: goto tr49;
+	case 38: goto tr49;
+	case 39: goto tr49;
 	}
 	}
 
 	_out: {}
 	}
 
-#line 239 "sdlang.rl"
+#line 249 "sdlang.rl"
 
         if (cs == sdlang_error)
         {

@@ -15,11 +15,14 @@
         check_stack_size(top, curline);
     }
 
+    # line breaks, with line counter
+
     newline = '\r'? '\n' @{curline += 1;};
     newline_wrap = '\\' newline;
     any_count_line = any | newline;
 
-# +> tick vs backtick
+    # quoted strings
+    #   + optionally use ' to delimit single-quoted strings
 
     single_quote_char = [^'`\\] | newline | ( '\\' . any_count_line );
     single_quote_string = ['`]{1} . single_quote_char* . ['`]{1};
@@ -29,23 +32,26 @@
 
     any_string = single_quote_string | double_quote_string;
 
+    # boolean and null values
+
     kw_true = 'true' | 'on';
     kw_false = 'false' | 'off';
     kw_null = 'null';
     keywords = kw_true | kw_false | kw_null;
 
+    # literals (node names)
+
     alnum_literal = alnum | [\.\:\-_$];
     literal = alpha . alnum_literal* - keywords;
 
-    cpp_comment = '//' [^\n]* newline;
-    lua_comment = '--' [^\n]* newline;
-    bash_comment = '#' [^\n]* newline;
-    one_line_comment = cpp_comment | lua_comment | bash_comment;
+    # comments
 
+    one_line_comment = ('//' | '--' | '#') [^\n]* newline;
     c_comment := any_count_line* :>> '*/' @{fgoto block;};
 
-# +> +/-
-# +> exponent format
+    # numeric values
+    #   + supports floating point e-notation
+    #   + explicitely captures trailing '+'/'-'
 
     float_fract = digit* '.' digit+ | digit+ '.';
     float_exp = [eE] [+\-]? digit+;
@@ -55,6 +61,9 @@
 
     int32 = [+\-]? ('0' | [1-9] [0-9]*);
     int64 = int32 [lL];
+    int128 = int32 [bB] [dD];
+
+    # attributes
 
     attribute = literal '=';
 
@@ -70,6 +79,7 @@
         float64 {emit(SDLANG_TOKEN_FLOAT64, ts, te, curline);};
 
         int64 {emit(SDLANG_TOKEN_INT64, ts, te, curline);};
+        int128 {emit(SDLANG_TOKEN_INT128, ts, te, curline);};
         int32 {emit(SDLANG_TOKEN_INT32, ts, te, curline);};
 
         kw_true {emit(SDLANG_TOKEN_TRUE, ts, te, curline);};
@@ -77,7 +87,6 @@
 
         kw_null {emit(SDLANG_TOKEN_NULL, ts, te, curline);};
 
-# 128-bit ints
 # data/time formats
 # base64 data
 # skip empty lines
@@ -141,6 +150,7 @@ static void emit(enum sdlang_token_type_t type, const char* ts, const char* te, 
 
     case SDLANG_TOKEN_INT32:
     case SDLANG_TOKEN_INT64:
+    case SDLANG_TOKEN_INT128:
     case SDLANG_TOKEN_FLOAT32:
     case SDLANG_TOKEN_FLOAT64:
         /* strip leading '+' */

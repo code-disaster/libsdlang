@@ -66,6 +66,10 @@ static void emit_token(const struct sdlang_token_t* token)
         fprintf(stdout, "- value(i64): %.*s", len, text);
         is_attribute = false;
         break;
+    case SDLANG_TOKEN_INT128:
+        fprintf(stdout, "- value(i128): %.*s", len, text);
+        is_attribute = false;
+        break;
     case SDLANG_TOKEN_FLOAT32:
         fprintf(stdout, "- value(f32): %.*s", len, text);
         is_attribute = false;
