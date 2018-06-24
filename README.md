@@ -49,7 +49,6 @@ Known bugs:
 Some value formats are not implemented yet:
 
 - date/time formats
-- Base64 encoded binary data
 - I'll probably add hexadecimal numbers. I like them.
 
 ### Implementation

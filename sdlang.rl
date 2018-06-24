@@ -63,6 +63,11 @@
     int64 = int32 [lL];
     int128 = int32 [bB] [dD];
 
+    # base64
+
+    base64_char = alnum | [+/=];
+    base64_string = '[' . base64_char* . ']';
+
     # attributes
 
     attribute = literal '=';
@@ -87,6 +92,7 @@
 
         kw_null {emit(SDLANG_TOKEN_NULL, ts, te, curline);};
 
+        base64_string {emit(SDLANG_TOKEN_BASE64, ts, te, curline);};
 # data/time formats
 # base64 data
 # skip empty lines
@@ -161,7 +167,8 @@ static void emit(enum sdlang_token_type_t type, const char* ts, const char* te, 
         break;
 
     case SDLANG_TOKEN_STRING:
-        /* strip quotes */
+    case SDLANG_TOKEN_BASE64:
+        /* strip delimiters */
         ++ts;
         --te;
         break;
