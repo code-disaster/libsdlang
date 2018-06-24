@@ -20,7 +20,7 @@ The provided `CMakeLists.txt` is written to be used with [fips](http://floooh.gi
 
 Have a look at `samples/parser.c`. In summary, `sdlang_parse()` takes a `fread()`-style function as a parameter, and produces a series of `sdlang_emit_token()` callbacks. Read the **Grammar** section below, or the sample code, for some (current) limitations.
 
-You can hook into `sdlang_report_error()` to capture error messages.
+You can hook into `sdlang_report_error()` to capture error output.
 
 ### Threading
 
@@ -43,8 +43,8 @@ Known bugs:
 
 - The end of a node is evaluated rather lazily. Closing brackets and semicolons generate an "end node" token. Non-wrapping newlines do too, but all of them, even for empty lines, which means that there can be multiple "end node" tokens in a row.
 - Semicolons to end a node are recognised but not enforced by the parser, which means these two lines are treated the same - basically, a new node name does end the previous node implicitly:
-  - `title "Some title"; author "Peter Parker"; alter-ego "Spiderman"`
-  - `title "Some title" author "Peter Parker" alter-ego "Spiderman"`
+  - `title "some title"; author "John Smith"`
+  - `title "some title" author "John Smith"`
 
 Some value formats are not implemented yet:
 
@@ -59,6 +59,4 @@ With less than 1.000 lines of code, the generated code is very compact, and has 
 
 The library doesn't allocate *any* memory. By default, it only uses a few hundred bytes of stack memory to store state and buffer input. You can predefine `SDLANG_PARSE_BUFFERSIZE` to increase the buffer size, which is probably only required when using large literals or string values.
 
-The parser uses a small stack frame for parsing nested SDLang blocks. Stack size can be changed by predefining `SDLANG_PARSE_STACKSIZE`.
-
-The stack frame **does not grow** - the parser will generate a `sdlang_report_error()` call when it's full.
+The parser uses a small stack frame for parsing nested SDLang blocks. Stack size can be changed by predefining `SDLANG_PARSE_STACKSIZE`. The stack frame **does not grow** - the parser will stop with a `SDLANG_PARSE_ERROR_STACK_OVERFLOW` when it's full.

@@ -89,13 +89,13 @@ static void report_error(enum sdlang_error_t error, int line)
 {
     switch (error)
     {
-    case SDLANG_ERROR_PARSE_ERROR:
+    case SDLANG_PARSE_ERROR:
         fprintf(stderr, "parse error at line %d\n", line);
         break;
-    case SDLANG_ERROR_PARSE_STACK_ERROR:
+    case SDLANG_PARSE_ERROR_STACK_OVERFLOW:
         fprintf(stderr, "parse stack overflow at line %d\n", line);
         break;
-    case SDLANG_ERROR_OUT_OF_BUFFER:
+    case SDLANG_PARSE_ERROR_BUFFER_TOO_SMALL:
         fprintf(stderr, "out of buffer memory at line %d\n", line);
         break;
     default:
@@ -124,7 +124,7 @@ int sdlang_parse(size_t (*stream)(void* ptr, size_t size, size_t nmemb))
     int cs, act, have = 0, curline = 1;
     int stack[SDLANG_PARSE_STACKSIZE], top = 0;
     char *ts, *te = 0;
-    int done = 0;
+    int done = 0, err = SDLANG_PARSE_OK;
 
     
 /* #line 131 "sdlang.c" */
@@ -145,7 +145,7 @@ int sdlang_parse(size_t (*stream)(void* ptr, size_t size, size_t nmemb))
 
         if (space == 0)
         {
-            (*sdlang_report_error)(SDLANG_ERROR_OUT_OF_BUFFER, curline);
+            err = SDLANG_PARSE_ERROR_BUFFER_TOO_SMALL;
             break;
         }
 
@@ -1071,13 +1071,13 @@ case 40:
 
         if (cs == sdlang_error)
         {
-            (*sdlang_report_error)(SDLANG_ERROR_PARSE_ERROR, curline);
+            err = SDLANG_PARSE_ERROR;
             break;
         }
 
         if (top == SDLANG_PARSE_STACKSIZE)
         {
-            (*sdlang_report_error)(SDLANG_ERROR_PARSE_STACK_ERROR, curline);
+            err = SDLANG_PARSE_ERROR_STACK_OVERFLOW;
             break;
         }
 
@@ -1094,5 +1094,10 @@ case 40:
         }
     }
 
-    return done ? 0 : 1;
+    if (err != SDLANG_PARSE_OK)
+    {
+        (*sdlang_report_error)(err, curline);
+    }
+
+    return err;
 }

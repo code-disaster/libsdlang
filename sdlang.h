@@ -42,9 +42,10 @@ enum sdlang_token_type_t
 
 enum sdlang_error_t
 {
-    SDLANG_ERROR_PARSE_ERROR,
-    SDLANG_ERROR_PARSE_STACK_ERROR,
-    SDLANG_ERROR_OUT_OF_BUFFER
+    SDLANG_PARSE_OK = 0,
+    SDLANG_PARSE_ERROR,
+    SDLANG_PARSE_ERROR_STACK_OVERFLOW,
+    SDLANG_PARSE_ERROR_BUFFER_TOO_SMALL
 };
 
 struct sdlang_token_t
