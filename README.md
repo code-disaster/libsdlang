@@ -62,6 +62,4 @@ The library doesn't allocate *any* memory. By default, it only uses a few hundre
 
 The parser uses a small stack frame for parsing nested SDLang blocks. Stack size can be changed by predefining `SDLANG_PARSE_STACKSIZE`.
 
-The stack frame **does not grow** - the parser will generate a `sdlang_report_error()` call when full, but `SDLANG_ASSERT()` or crash on an overflow.
-
-> I'd like to stop the parser in such scenario, but didn't yet find a clean way to do so.
+The stack frame **does not grow** - the parser will generate a `sdlang_report_error()` call when it's full.

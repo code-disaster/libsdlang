@@ -12,7 +12,7 @@
     machine sdlang;
 
     prepush {
-        check_stack_size(top, curline);
+        check_stack_size(&p, pe, top, curline);
     }
 
     # line breaks, with line counter
@@ -189,11 +189,11 @@ static void report_error(enum sdlang_error_t error, int line)
     case SDLANG_ERROR_PARSE_ERROR:
         fprintf(stderr, "parse error at line %d\n", line);
         break;
+    case SDLANG_ERROR_PARSE_STACK_ERROR:
+        fprintf(stderr, "parse stack overflow at line %d\n", line);
+        break;
     case SDLANG_ERROR_OUT_OF_BUFFER:
         fprintf(stderr, "out of buffer memory at line %d\n", line);
-        break;
-    case SDLANG_ERROR_STACK_FULL:
-        fprintf(stderr, "parser stack full at line %d, crash imminent\n", line);
         break;
     default:
         fprintf(stderr, "unknown error [%d] at line %d\n", error, line);
@@ -203,15 +203,15 @@ static void report_error(enum sdlang_error_t error, int line)
 
 void (*sdlang_report_error)(enum sdlang_error_t error, int line) = report_error;
 
-static void check_stack_size(int top, int line)
+static void check_stack_size(char** p, char* pe, int top, int line)
 {
-    if (top == SDLANG_PARSE_STACKSIZE)
+    if (top == SDLANG_PARSE_STACKSIZE - 1)
     {
-        SDLANG_ASSERT(0 && " stack overflow");
-    }
-    else if (top == SDLANG_PARSE_STACKSIZE - 1)
-    {
-        (*sdlang_report_error)(SDLANG_ERROR_STACK_FULL, line);
+        /*
+            trick the FSM into completing the current iteration,
+            then the main loop checks for the stack pointer
+        */
+        *p = pe - 1;
     }
 }
 
@@ -250,6 +250,12 @@ int sdlang_parse(size_t (*stream)(void* ptr, size_t size, size_t nmemb))
         if (cs == sdlang_error)
         {
             (*sdlang_report_error)(SDLANG_ERROR_PARSE_ERROR, curline);
+            break;
+        }
+
+        if (top == SDLANG_PARSE_STACKSIZE)
+        {
+            (*sdlang_report_error)(SDLANG_ERROR_PARSE_STACK_ERROR, curline);
             break;
         }
 

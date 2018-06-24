@@ -10,11 +10,6 @@
 # define SDLANG_PARSE_STACKSIZE 32
 #endif
 
-#ifndef SDLANG_ASSERT
-# include <assert.h>
-# define SDLANG_ASSERT(cond) assert(cond)
-#endif
-
 #ifndef SDLANG_MEMMOVE
 # include <string.h>
 # define SDLANG_MEMMOVE(d, s, n) memmove(d, s, n)
@@ -47,8 +42,8 @@ enum sdlang_token_type_t
 enum sdlang_error_t
 {
     SDLANG_ERROR_PARSE_ERROR,
-    SDLANG_ERROR_OUT_OF_BUFFER,
-    SDLANG_ERROR_STACK_FULL
+    SDLANG_ERROR_PARSE_STACK_ERROR,
+    SDLANG_ERROR_OUT_OF_BUFFER
 };
 
 struct sdlang_token_t
