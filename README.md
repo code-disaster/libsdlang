@@ -12,7 +12,7 @@ Surprisingly I wasn't able to find a C/C++ implementation of this intriguing lit
 
 ### Source code
 
-It's simple. Add `sdlang.c` and `sdlang.h` to your project. The API is pretty slim. Just skim through the header, and maybe `samples/parser.c`, and you should be ready to go.
+It's simple. Add `sdlang.c`, `sdlang.inl` and `sdlang.h` to your project.
 
 The provided `CMakeLists.txt` is written to be used with [fips](http://floooh.github.io/fips/index.html), *the friendly CMake wrapper*. It won't work with regular CMake.
 

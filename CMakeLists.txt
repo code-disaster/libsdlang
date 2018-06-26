@@ -9,6 +9,7 @@ fips_begin_lib(sdlang)
     fips_files(
         sdlang.c
         sdlang.h
+        sdlang.inl
     )
 fips_end_lib()
 

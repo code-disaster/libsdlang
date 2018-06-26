@@ -1,2 +1,2 @@
 #!/usr/bin/env bash
-ragel -L -G2 -o sdlang.c sdlang.rl
+ragel -L -G2 -o sdlang.inl sdlang.rl
