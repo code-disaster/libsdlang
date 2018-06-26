@@ -23,6 +23,9 @@ extern "C" {
     ## types
 #*/
 
+/*#
+    ### sdlang_token_type_t
+#*/
 enum sdlang_token_type_t
 {
     SDLANG_TOKEN_NODE,
@@ -44,6 +47,9 @@ enum sdlang_token_type_t
     SDLANG_TOKEN_NULL
 };
 
+/*#
+    ### sdlang_error_t
+#*/
 enum sdlang_error_t
 {
     SDLANG_PARSE_OK = 0,
@@ -52,6 +58,24 @@ enum sdlang_error_t
     SDLANG_PARSE_ERROR_BUFFER_TOO_SMALL
 };
 
+/*#
+    ### sdlang_token_t
+
+    Token description as identified by the parser.
+
+    The `string` variable points at the first and after the last `char` of
+    the character sequence in relation to the token type. For a node or
+    attribute, it's the node/attribute name. For value types, it's the actual
+    value.
+
+    For some token types, like `SDLANG_TOKEN_NODE_END`, `string` pointers may
+    be set to `NULL`.
+
+    !!! WARNING
+        `string.from` and `string.to` point to buffer content which may not be
+        valid anymore after subsequent parsing operations. You'll need to copy
+        the string content if you want to access it later.
+#*/
 struct sdlang_token_t
 {
     enum sdlang_token_type_t type;
@@ -70,7 +94,6 @@ struct sdlang_token_t
 #*/
 
 /*#
-
     ### sdlang_emit_token
 
     ~~~ C
@@ -90,22 +113,18 @@ struct sdlang_token_t
         {
             // process token
         }
-        else
-        {
-            sdlang_emit_token(token, user);
-        }
+
+        sdlang_emit_token(token, user);
     }
 
     // ...
 
     sdlang_set_emit_token(emit_token, user);
     ~~~
-
 #*/
 extern void sdlang_emit_token(const struct sdlang_token_t* token, void* user);
 
 /*#
-
     ### sdlang_set_emit_token
 
     ~~~ C
@@ -117,12 +136,10 @@ extern void sdlang_emit_token(const struct sdlang_token_t* token, void* user);
     This is the callback used by the parser at the lowest level. By capturing
     this function, any APIs at a higher level are effectively cut off. You can
     forward the call to `sdlang_emit_token()` to prevent this.
-
 #*/
 extern void sdlang_set_emit_token(void (*emit_token)(const struct sdlang_token_t* token, void* user));
 
 /*#
-
     ### sdlang_set_report_error
 
     ~~~ C
@@ -133,12 +150,10 @@ extern void sdlang_set_emit_token(void (*emit_token)(const struct sdlang_token_t
     which is an empty implementation.
 
     See __samples/parser.c__ for an example.
-
 #*/
 extern void sdlang_set_report_error(void (*report_error)(enum sdlang_error_t error, int line));
 
 /*#
-
     ### sdlang_parse
 
     ~~~ C
@@ -163,7 +178,6 @@ extern void sdlang_set_report_error(void (*report_error)(enum sdlang_error_t err
 
     Returns 0 on success. If an error occured, a positive number is returned,
     which can be mapped to `sdlang_error_t`.
-
 #*/
 extern int sdlang_parse(size_t (*stream)(void* ptr, size_t size, void* user), void* user);
 

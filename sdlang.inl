@@ -188,7 +188,7 @@ tr11:
 /* #line 16 "sdlang.rl" */
 	{curline += 1;}
 /* #line 108 "sdlang.rl" */
-	{te = p+1;}
+	{te = p+1;{emit(SDLANG_TOKEN_NODE_END, NULL, NULL, curline, user);}}
 	goto st22;
 tr19:
 /* #line 1 "NONE" */

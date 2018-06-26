@@ -105,10 +105,10 @@
             fret;
         };
 
-        one_line_comment;
+        one_line_comment {emit(SDLANG_TOKEN_NODE_END, NULL, NULL, curline, user);};
         '/*' {fgoto c_comment;};
 
-        newline_wrap; # wrapping newlines do not end node
+        newline_wrap; # wrapping lines do not end node
         newline {emit(SDLANG_TOKEN_NODE_END, NULL, NULL, curline, user);};
 
         [ \t];
