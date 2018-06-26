@@ -61,11 +61,39 @@ struct sdlang_token_t
     int line;
 };
 
-extern void (*sdlang_emit_token)(const struct sdlang_token_t* token);
+extern void (*sdlang_emit_token)(const struct sdlang_token_t* token, void* user);
 
 extern void (*sdlang_report_error)(enum sdlang_error_t error, int line);
 
-extern int sdlang_parse(size_t (*stream)(void* ptr, size_t size, size_t nmemb));
+/*#
+
+    ``` C
+    int sdlang_parse(size_t (*stream)(void* ptr, size_t size, size_t nmemb), void* user)
+    ```
+
+    -----
+
+    Parses a SDLang document from an input stream.
+
+    The first argument is a stream function which writes up to `size` bytes to memory
+    at `ptr`, and returns the number of bytes effectively written.
+
+    The `user` parameter is a user-defined context pointer forwarded to most callbacks,
+    and can be `NULL`.
+
+    ~~~ C
+    size_t sdlang_read_function(void* ptr, size_t size, void* user)
+    {
+        FILE* file = get_file_handle_from_user_context(user);
+        return fread(ptr, 1, size, file);
+    }
+    ~~~
+
+    Returns 0 on success. If an error occured, a positive number is returned,
+    which can be mapped to `sdlang_error_t`.
+
+#*/
+extern int sdlang_parse(size_t (*stream)(void* ptr, size_t size, void* user), void* user);
 
 #ifdef __cplusplus
 }

@@ -3,18 +3,17 @@
 #include <stdio.h>
 #include <stdbool.h>
 
-static FILE* file = NULL;
-
 static bool is_node = false;
 static bool is_attribute = false;
 static int depth = 0;
 
-static size_t read(void* ptr, size_t size, size_t nmemb)
+static size_t read(void* ptr, size_t size, void* user)
 {
-    return fread(ptr, size, nmemb, file ? file : stdin);
+    FILE* file = user;
+    return fread(ptr, 1, size, file);
 }
 
-static void emit_token(const struct sdlang_token_t* token)
+static void emit_token(const struct sdlang_token_t* token, void* user)
 {
     if (token->type == SDLANG_TOKEN_NODE_END)
     {
@@ -109,6 +108,8 @@ static void emit_token(const struct sdlang_token_t* token)
 
 int main(int argc, char* argv[])
 {
+    FILE* file = stdout;
+
     if (argc > 1)
     {
         file = fopen(argv[1], "rb");
@@ -122,7 +123,7 @@ int main(int argc, char* argv[])
 
     sdlang_emit_token = emit_token;
 
-    const int result = sdlang_parse(read);
+    const int result = sdlang_parse(read, file);
 
     if (file != NULL)
     {

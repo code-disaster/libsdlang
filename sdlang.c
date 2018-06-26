@@ -25,8 +25,9 @@ static const int sdlang_en_main = 20;
 
 /* #line 131 "sdlang.rl" */
 
-static void emit_token(const struct sdlang_token_t* token)
+static void emit_token(const struct sdlang_token_t* token, void* user)
 {
+    (void)user;
     fprintf(stdout, "[%2d] type=%d, value=", token->line, token->type);
     if (token->string.from < token->string.to)
     {
@@ -39,9 +40,10 @@ static void emit_token(const struct sdlang_token_t* token)
     fprintf(stdout, "\n");
 }
 
-void (*sdlang_emit_token)(const struct sdlang_token_t* token) = emit_token;
+void (*sdlang_emit_token)(const struct sdlang_token_t*, void*) = emit_token;
 
-static void emit(enum sdlang_token_type_t type, const char* ts, const char* te, int line)
+static void emit(enum sdlang_token_type_t type, const char* ts,
+                 const char* te, int line, void* user)
 {
     switch (type)
     {
@@ -82,7 +84,7 @@ static void emit(enum sdlang_token_type_t type, const char* ts, const char* te, 
         .line = line
     };
 
-    (*sdlang_emit_token)(&token);
+    (*sdlang_emit_token)(&token, user);
 }
 
 static void report_error(enum sdlang_error_t error, int line)
@@ -118,7 +120,7 @@ static void check_stack_size(char** p, char* pe, int top, int line)
     }
 }
 
-int sdlang_parse(size_t (*stream)(void* ptr, size_t size, size_t nmemb))
+int sdlang_parse(size_t (*stream)(void* ptr, size_t size, void* user), void* user)
 {
     char buf[SDLANG_PARSE_BUFFERSIZE];
     int cs, act, have = 0, curline = 1;
@@ -127,7 +129,7 @@ int sdlang_parse(size_t (*stream)(void* ptr, size_t size, size_t nmemb))
     int done = 0, err = SDLANG_PARSE_OK;
 
     
-/* #line 131 "sdlang.c" */
+/* #line 133 "sdlang.c" */
 	{
 	cs = sdlang_start;
 	top = 0;
@@ -136,7 +138,7 @@ int sdlang_parse(size_t (*stream)(void* ptr, size_t size, size_t nmemb))
 	act = 0;
 	}
 
-/* #line 234 "sdlang.rl" */
+/* #line 236 "sdlang.rl" */
 
     while (!done)
     {
@@ -149,7 +151,7 @@ int sdlang_parse(size_t (*stream)(void* ptr, size_t size, size_t nmemb))
             break;
         }
 
-        len = stream(p, 1, space);
+        len = stream(p, space, user);
         pe = p + len;
 
         if (len < space)
@@ -159,7 +161,7 @@ int sdlang_parse(size_t (*stream)(void* ptr, size_t size, size_t nmemb))
         }
 
         
-/* #line 163 "sdlang.c" */
+/* #line 165 "sdlang.c" */
 	{
 	if ( p == pe )
 		goto _test_eof;
@@ -230,7 +232,7 @@ st20:
 case 20:
 /* #line 1 "NONE" */
 	{ts = p;}
-/* #line 234 "sdlang.c" */
+/* #line 236 "sdlang.c" */
 	goto tr31;
 tr1:
 /* #line 20 "sdlang.rl" */
@@ -242,7 +244,7 @@ st1:
 	if ( ++p == pe )
 		goto _test_eof1;
 case 1:
-/* #line 246 "sdlang.c" */
+/* #line 248 "sdlang.c" */
 	switch( (*p) ) {
 		case 10: goto tr1;
 		case 42: goto st2;
@@ -266,7 +268,7 @@ st21:
 	if ( ++p == pe )
 		goto _test_eof21;
 case 21:
-/* #line 270 "sdlang.c" */
+/* #line 272 "sdlang.c" */
 	goto st0;
 st0:
 cs = 0;
@@ -275,11 +277,11 @@ tr4:
 /* #line 20 "sdlang.rl" */
 	{curline += 1;}
 /* #line 117 "sdlang.rl" */
-	{te = p+1;{emit(SDLANG_TOKEN_NODE_END, NULL, NULL, curline);}}
+	{te = p+1;{emit(SDLANG_TOKEN_NODE_END, NULL, NULL, curline, user);}}
 	goto st22;
 tr8:
 /* #line 81 "sdlang.rl" */
-	{te = p+1;{emit(SDLANG_TOKEN_STRING, ts, te, curline);}}
+	{te = p+1;{emit(SDLANG_TOKEN_STRING, ts, te, curline, user);}}
 	goto st22;
 tr11:
 /* #line 20 "sdlang.rl" */
@@ -291,30 +293,30 @@ tr19:
 /* #line 1 "NONE" */
 	{	switch( act ) {
 	case 5:
-	{{p = ((te))-1;}emit(SDLANG_TOKEN_FLOAT64, ts, te, curline);}
+	{{p = ((te))-1;}emit(SDLANG_TOKEN_FLOAT64, ts, te, curline, user);}
 	break;
 	case 8:
-	{{p = ((te))-1;}emit(SDLANG_TOKEN_INT32, ts, te, curline);}
+	{{p = ((te))-1;}emit(SDLANG_TOKEN_INT32, ts, te, curline, user);}
 	break;
 	case 9:
-	{{p = ((te))-1;}emit(SDLANG_TOKEN_TRUE, ts, te, curline);}
+	{{p = ((te))-1;}emit(SDLANG_TOKEN_TRUE, ts, te, curline, user);}
 	break;
 	case 10:
-	{{p = ((te))-1;}emit(SDLANG_TOKEN_FALSE, ts, te, curline);}
+	{{p = ((te))-1;}emit(SDLANG_TOKEN_FALSE, ts, te, curline, user);}
 	break;
 	case 11:
-	{{p = ((te))-1;}emit(SDLANG_TOKEN_NULL, ts, te, curline);}
+	{{p = ((te))-1;}emit(SDLANG_TOKEN_NULL, ts, te, curline, user);}
 	break;
 	}
 	}
 	goto st22;
 tr22:
 /* #line 88 "sdlang.rl" */
-	{{p = ((te))-1;}{emit(SDLANG_TOKEN_INT32, ts, te, curline);}}
+	{{p = ((te))-1;}{emit(SDLANG_TOKEN_INT32, ts, te, curline, user);}}
 	goto st22;
 tr25:
 /* #line 87 "sdlang.rl" */
-	{te = p+1;{emit(SDLANG_TOKEN_INT128, ts, te, curline);}}
+	{te = p+1;{emit(SDLANG_TOKEN_INT128, ts, te, curline, user);}}
 	goto st22;
 tr26:
 /* #line 114 "sdlang.rl" */
@@ -322,7 +324,7 @@ tr26:
 	goto st22;
 tr28:
 /* #line 95 "sdlang.rl" */
-	{te = p+1;{emit(SDLANG_TOKEN_BASE64, ts, te, curline);}}
+	{te = p+1;{emit(SDLANG_TOKEN_BASE64, ts, te, curline, user);}}
 	goto st22;
 tr29:
 /* #line 20 "sdlang.rl" */
@@ -336,12 +338,12 @@ tr32:
 	goto st22;
 tr37:
 /* #line 101 "sdlang.rl" */
-	{te = p+1;{emit(SDLANG_TOKEN_NODE_END, ts, te, curline);}}
+	{te = p+1;{emit(SDLANG_TOKEN_NODE_END, ts, te, curline, user);}}
 	goto st22;
 tr44:
 /* #line 103 "sdlang.rl" */
 	{te = p+1;{
-            emit(SDLANG_TOKEN_BLOCK, ts, te, curline);
+            emit(SDLANG_TOKEN_BLOCK, ts, te, curline, user);
             {
         check_stack_size(&p, pe, top, curline);
     {stack[top++] = 22; goto st22;}}
@@ -350,33 +352,33 @@ tr44:
 tr45:
 /* #line 108 "sdlang.rl" */
 	{te = p+1;{
-            emit(SDLANG_TOKEN_BLOCK_END, ts, te, curline);
+            emit(SDLANG_TOKEN_BLOCK_END, ts, te, curline, user);
             {cs = stack[--top];goto _again;}
         }}
 	goto st22;
 tr46:
 /* #line 84 "sdlang.rl" */
-	{te = p;p--;{emit(SDLANG_TOKEN_FLOAT64, ts, te, curline);}}
+	{te = p;p--;{emit(SDLANG_TOKEN_FLOAT64, ts, te, curline, user);}}
 	goto st22;
 tr47:
 /* #line 83 "sdlang.rl" */
-	{te = p+1;{emit(SDLANG_TOKEN_FLOAT32, ts, te, curline);}}
+	{te = p+1;{emit(SDLANG_TOKEN_FLOAT32, ts, te, curline, user);}}
 	goto st22;
 tr48:
 /* #line 88 "sdlang.rl" */
-	{te = p;p--;{emit(SDLANG_TOKEN_INT32, ts, te, curline);}}
+	{te = p;p--;{emit(SDLANG_TOKEN_INT32, ts, te, curline, user);}}
 	goto st22;
 tr50:
 /* #line 86 "sdlang.rl" */
-	{te = p+1;{emit(SDLANG_TOKEN_INT64, ts, te, curline);}}
+	{te = p+1;{emit(SDLANG_TOKEN_INT64, ts, te, curline, user);}}
 	goto st22;
 tr51:
 /* #line 79 "sdlang.rl" */
-	{te = p;p--;{emit(SDLANG_TOKEN_NODE, ts, te, curline);}}
+	{te = p;p--;{emit(SDLANG_TOKEN_NODE, ts, te, curline, user);}}
 	goto st22;
 tr52:
 /* #line 77 "sdlang.rl" */
-	{te = p+1;{emit(SDLANG_TOKEN_ATTRIBUTE, ts, te, curline);}}
+	{te = p+1;{emit(SDLANG_TOKEN_ATTRIBUTE, ts, te, curline, user);}}
 	goto st22;
 st22:
 /* #line 1 "NONE" */
@@ -386,7 +388,7 @@ st22:
 case 22:
 /* #line 1 "NONE" */
 	{ts = p;}
-/* #line 390 "sdlang.c" */
+/* #line 392 "sdlang.c" */
 	switch( (*p) ) {
 		case 9: goto tr32;
 		case 10: goto tr4;
@@ -435,7 +437,7 @@ st4:
 	if ( ++p == pe )
 		goto _test_eof4;
 case 4:
-/* #line 439 "sdlang.c" */
+/* #line 441 "sdlang.c" */
 	switch( (*p) ) {
 		case 10: goto tr7;
 		case 34: goto tr8;
@@ -464,7 +466,7 @@ st7:
 	if ( ++p == pe )
 		goto _test_eof7;
 case 7:
-/* #line 468 "sdlang.c" */
+/* #line 470 "sdlang.c" */
 	switch( (*p) ) {
 		case 10: goto tr13;
 		case 39: goto tr8;
@@ -507,7 +509,7 @@ st23:
 	if ( ++p == pe )
 		goto _test_eof23;
 case 23:
-/* #line 511 "sdlang.c" */
+/* #line 513 "sdlang.c" */
 	switch( (*p) ) {
 		case 69: goto st11;
 		case 70: goto tr47;
@@ -556,7 +558,7 @@ st25:
 	if ( ++p == pe )
 		goto _test_eof25;
 case 25:
-/* #line 560 "sdlang.c" */
+/* #line 562 "sdlang.c" */
 	switch( (*p) ) {
 		case 46: goto tr18;
 		case 66: goto st14;
@@ -600,7 +602,7 @@ st26:
 	if ( ++p == pe )
 		goto _test_eof26;
 case 26:
-/* #line 604 "sdlang.c" */
+/* #line 606 "sdlang.c" */
 	switch( (*p) ) {
 		case 46: goto tr18;
 		case 66: goto st14;
@@ -799,7 +801,7 @@ st32:
 	if ( ++p == pe )
 		goto _test_eof32;
 case 32:
-/* #line 803 "sdlang.c" */
+/* #line 805 "sdlang.c" */
 	switch( (*p) ) {
 		case 36: goto st27;
 		case 95: goto st27;
@@ -1067,7 +1069,7 @@ case 40:
 	_out: {}
 	}
 
-/* #line 256 "sdlang.rl" */
+/* #line 258 "sdlang.rl" */
 
         if (cs == sdlang_error)
         {

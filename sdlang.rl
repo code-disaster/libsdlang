@@ -74,39 +74,39 @@
 
     block := |*
 
-        attribute {emit(SDLANG_TOKEN_ATTRIBUTE, ts, te, curline);};
+        attribute {emit(SDLANG_TOKEN_ATTRIBUTE, ts, te, curline, user);};
 
-        literal {emit(SDLANG_TOKEN_NODE, ts, te, curline);};
+        literal {emit(SDLANG_TOKEN_NODE, ts, te, curline, user);};
 
-        any_string {emit(SDLANG_TOKEN_STRING, ts, te, curline);};
+        any_string {emit(SDLANG_TOKEN_STRING, ts, te, curline, user);};
 
-        float32 {emit(SDLANG_TOKEN_FLOAT32, ts, te, curline);};
-        float64 {emit(SDLANG_TOKEN_FLOAT64, ts, te, curline);};
+        float32 {emit(SDLANG_TOKEN_FLOAT32, ts, te, curline, user);};
+        float64 {emit(SDLANG_TOKEN_FLOAT64, ts, te, curline, user);};
 
-        int64 {emit(SDLANG_TOKEN_INT64, ts, te, curline);};
-        int128 {emit(SDLANG_TOKEN_INT128, ts, te, curline);};
-        int32 {emit(SDLANG_TOKEN_INT32, ts, te, curline);};
+        int64 {emit(SDLANG_TOKEN_INT64, ts, te, curline, user);};
+        int128 {emit(SDLANG_TOKEN_INT128, ts, te, curline, user);};
+        int32 {emit(SDLANG_TOKEN_INT32, ts, te, curline, user);};
 
-        kw_true {emit(SDLANG_TOKEN_TRUE, ts, te, curline);};
-        kw_false {emit(SDLANG_TOKEN_FALSE, ts, te, curline);};
+        kw_true {emit(SDLANG_TOKEN_TRUE, ts, te, curline, user);};
+        kw_false {emit(SDLANG_TOKEN_FALSE, ts, te, curline, user);};
 
-        kw_null {emit(SDLANG_TOKEN_NULL, ts, te, curline);};
+        kw_null {emit(SDLANG_TOKEN_NULL, ts, te, curline, user);};
 
-        base64_string {emit(SDLANG_TOKEN_BASE64, ts, te, curline);};
+        base64_string {emit(SDLANG_TOKEN_BASE64, ts, te, curline, user);};
 # data/time formats
 # base64 data
 # skip empty lines
 # lazy token_end
 
-        ';' {emit(SDLANG_TOKEN_NODE_END, ts, te, curline);};
+        ';' {emit(SDLANG_TOKEN_NODE_END, ts, te, curline, user);};
 
         '{' {
-            emit(SDLANG_TOKEN_BLOCK, ts, te, curline);
+            emit(SDLANG_TOKEN_BLOCK, ts, te, curline, user);
             fcall block;
         };
 
         '}' {
-            emit(SDLANG_TOKEN_BLOCK_END, ts, te, curline);
+            emit(SDLANG_TOKEN_BLOCK_END, ts, te, curline, user);
             fret;
         };
 
@@ -114,7 +114,7 @@
         '/*' {fgoto c_comment;};
 
         newline_wrap; # wrapping newlines do not end node
-        newline {emit(SDLANG_TOKEN_NODE_END, NULL, NULL, curline);};
+        newline {emit(SDLANG_TOKEN_NODE_END, NULL, NULL, curline, user);};
 
         [ \t];
 
@@ -129,8 +129,9 @@
 
 %% write data nofinal;
 
-static void emit_token(const struct sdlang_token_t* token)
+static void emit_token(const struct sdlang_token_t* token, void* user)
 {
+    (void)user;
     fprintf(stdout, "[%2d] type=%d, value=", token->line, token->type);
     if (token->string.from < token->string.to)
     {
@@ -143,9 +144,10 @@ static void emit_token(const struct sdlang_token_t* token)
     fprintf(stdout, "\n");
 }
 
-void (*sdlang_emit_token)(const struct sdlang_token_t* token) = emit_token;
+void (*sdlang_emit_token)(const struct sdlang_token_t*, void*) = emit_token;
 
-static void emit(enum sdlang_token_type_t type, const char* ts, const char* te, int line)
+static void emit(enum sdlang_token_type_t type, const char* ts,
+                 const char* te, int line, void* user)
 {
     switch (type)
     {
@@ -186,7 +188,7 @@ static void emit(enum sdlang_token_type_t type, const char* ts, const char* te, 
         .line = line
     };
 
-    (*sdlang_emit_token)(&token);
+    (*sdlang_emit_token)(&token, user);
 }
 
 static void report_error(enum sdlang_error_t error, int line)
@@ -222,7 +224,7 @@ static void check_stack_size(char** p, char* pe, int top, int line)
     }
 }
 
-int sdlang_parse(size_t (*stream)(void* ptr, size_t size, size_t nmemb))
+int sdlang_parse(size_t (*stream)(void* ptr, size_t size, void* user), void* user)
 {
     char buf[SDLANG_PARSE_BUFFERSIZE];
     int cs, act, have = 0, curline = 1;
@@ -243,7 +245,7 @@ int sdlang_parse(size_t (*stream)(void* ptr, size_t size, size_t nmemb))
             break;
         }
 
-        len = stream(p, 1, space);
+        len = stream(p, space, user);
         pe = p + len;
 
         if (len < space)
