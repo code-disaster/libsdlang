@@ -999,7 +999,7 @@ case 40:
 
     if (err != SDLANG_PARSE_OK)
     {
-        (*sdlang_report_error)(err, curline);
+        (*sdlang_user_report_error)(err, curline);
     }
 
     return err;

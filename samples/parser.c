@@ -106,6 +106,25 @@ static void emit_token(const struct sdlang_token_t* token, void* user)
     fprintf(stdout, "\n");
 }
 
+static void report_error(enum sdlang_error_t error, int line)
+{
+    switch (error)
+    {
+    case SDLANG_PARSE_ERROR:
+        fprintf(stderr, "parse error at line %d\n", line);
+        break;
+    case SDLANG_PARSE_ERROR_STACK_OVERFLOW:
+        fprintf(stderr, "parse stack overflow at line %d\n", line);
+        break;
+    case SDLANG_PARSE_ERROR_BUFFER_TOO_SMALL:
+        fprintf(stderr, "out of buffer memory at line %d\n", line);
+        break;
+    default:
+        fprintf(stderr, "unknown error [%d] at line %d\n", error, line);
+        break;
+    }
+}
+
 int main(int argc, char* argv[])
 {
     FILE* file = stdout;
@@ -121,7 +140,8 @@ int main(int argc, char* argv[])
         }
     }
 
-    sdlang_emit_token = emit_token;
+    sdlang_set_emit_token(emit_token);
+    sdlang_set_report_error(report_error);
 
     const int result = sdlang_parse(read, file);
 

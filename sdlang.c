@@ -1,23 +1,17 @@
 #include "sdlang.h"
 
-#include <stdio.h>
-
-static void emit_token(const struct sdlang_token_t* token, void* user)
+void sdlang_emit_token(const struct sdlang_token_t* token, void* user)
 {
+    (void)token;
     (void)user;
-    fprintf(stdout, "[%2d] type=%d, value=", token->line, token->type);
-    if (token->string.from < token->string.to)
-    {
-        fwrite(token->string.from, 1, token->string.to - token->string.from, stdout);
-    }
-    else
-    {
-        fprintf(stdout, "n/a");
-    }
-    fprintf(stdout, "\n");
 }
 
-void (*sdlang_emit_token)(const struct sdlang_token_t*, void*) = emit_token;
+static void (*sdlang_user_emit_token)(const struct sdlang_token_t*, void*) = sdlang_emit_token;
+
+void sdlang_set_emit_token(void (*emit_token)(const struct sdlang_token_t* token, void* user))
+{
+    sdlang_user_emit_token = emit_token != NULL ? emit_token : sdlang_emit_token;
+}
 
 static void emit(enum sdlang_token_type_t type, const char* ts,
                  const char* te, int line, void* user)
@@ -61,29 +55,21 @@ static void emit(enum sdlang_token_type_t type, const char* ts,
         .line = line
     };
 
-    (*sdlang_emit_token)(&token, user);
+    (*sdlang_user_emit_token)(&token, user);
 }
 
-static void report_error(enum sdlang_error_t error, int line)
+static void sdlang_report_error(enum sdlang_error_t error, int line)
 {
-    switch (error)
-    {
-    case SDLANG_PARSE_ERROR:
-        fprintf(stderr, "parse error at line %d\n", line);
-        break;
-    case SDLANG_PARSE_ERROR_STACK_OVERFLOW:
-        fprintf(stderr, "parse stack overflow at line %d\n", line);
-        break;
-    case SDLANG_PARSE_ERROR_BUFFER_TOO_SMALL:
-        fprintf(stderr, "out of buffer memory at line %d\n", line);
-        break;
-    default:
-        fprintf(stderr, "unknown error [%d] at line %d\n", error, line);
-        break;
-    }
+    (void)error;
+    (void)line;
 }
 
-void (*sdlang_report_error)(enum sdlang_error_t error, int line) = report_error;
+static void (*sdlang_user_report_error)(enum sdlang_error_t error, int line) = sdlang_report_error;
+
+void sdlang_set_report_error(void (*report_error)(enum sdlang_error_t error, int line))
+{
+    sdlang_user_report_error = report_error != NULL ? report_error : sdlang_report_error;
+}
 
 static void check_stack_size(char** p, char* pe, int top, int line)
 {

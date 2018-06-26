@@ -183,7 +183,7 @@ int sdlang_parse(size_t (*stream)(void* ptr, size_t size, void* user), void* use
 
     if (err != SDLANG_PARSE_OK)
     {
-        (*sdlang_report_error)(err, curline);
+        (*sdlang_user_report_error)(err, curline);
     }
 
     return err;
