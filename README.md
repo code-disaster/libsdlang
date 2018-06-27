@@ -18,7 +18,7 @@ The provided `CMakeLists.txt` is written to be used with [fips](http://floooh.gi
 
 ### Token API
 
-Have a look at `samples/parser.c`. In summary, `sdlang_parse()` takes a stream function as a parameter, and produces a series of callbacks which can be captured with `sdlang_set_emit_token()`.
+Have a look at `samples/parser.c`. In summary, `sdlang_parse()` takes a stream function as a parameter, and produces a series of callbacks which can be captured with `sdlang_set_emit_token()` or `sdlang_set_emit_functions`.
 
 You can capture error output `sdlang_set_report_error()`.
 

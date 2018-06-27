@@ -1,6 +1,9 @@
 #pragma once
 
+#define _CRT_SECURE_NO_WARNINGS
+
 #include <stdint.h>
+#include <stdbool.h>
 
 #ifndef SDLANG_PARSE_BUFFERSIZE
 # define SDLANG_PARSE_BUFFERSIZE 128
@@ -14,6 +17,9 @@
 # include <string.h>
 # define SDLANG_MEMMOVE(d, s, n) memmove(d, s, n)
 #endif
+
+#define SDLANG_NODE_MAXNAMELEN 48
+#define SDLANG_ATTR_MAXNAMELEN 48
 
 #ifdef __cplusplus
 extern "C" {
@@ -92,6 +98,47 @@ struct sdlang_token_t
 };
 
 /*#
+    ### sdlang_functions_t
+
+    User function table.
+
+    Node and attribute names are null-terminated. Any other string values are
+    not - the caller needs to ensure to not read past `len` characters.
+    
+    Any node names, attribute names and character buffers addressed by `ptr`
+    are only valid during callbacks, and can/will be overwritten by the parser
+    afterwards.
+
+    If a function pointer is set to `NULL`, any corresponding callback will be
+    discarded.
+
+    !!! WARNING
+        `node_name` and `attr_name` are used internally as a temporary storage
+        for node and attribute names. Consider their content read-only during,
+        and undefined after execution of the parser.
+#*/
+struct sdlang_functions_t
+{
+    void (*block_begin)(const char* node, void* user);
+    void (*block_end)(void* user);
+    void (*value_i32)(const char* node, const char* attr, int32_t value, void* user);
+    void (*value_i64)(const char* node, const char* attr, int64_t value, void* user);
+    void (*value_i128)(const char* node, const char* attr, int64_t hi, uint64_t lo, void* user);
+    void (*value_f32)(const char* node, const char* attr, float value, void* user);
+    void (*value_f64)(const char* node, const char* attr, double value, void* user);
+    void (*value_string)(const char* node, const char* attr, const char* ptr, int len, void* user);
+    void (*value_base64)(const char* node, const char* attr, const char* ptr, int len, void* user);
+    void (*value_u32)(const char* node, const char* attr, uint32_t value, void* user);
+    void (*value_u64)(const char* node, const char* attr, uint64_t value, void* user);
+    void (*value_bool)(const char* node, const char* attr, bool value, void* user);
+    void (*value_null)(const char* node, const char* attr, void* user);
+
+    /* local node/attribute name buffers */
+    char node_name[SDLANG_NODE_MAXNAMELEN];
+    char attr_name[SDLANG_ATTR_MAXNAMELEN];
+};
+
+/*#
     ## functions
 #*/
 
@@ -140,6 +187,29 @@ extern void sdlang_emit_token(const struct sdlang_token_t* token, void* user);
     forward the call to `sdlang_emit_token()` to prevent this.
 #*/
 extern void sdlang_set_emit_token(void (*emit_token)(const struct sdlang_token_t* token, void* user));
+
+/*#
+    ### sdlang_set_emit_functions
+
+    ~~~ C
+    void sdlang_set_emit_functions(struct sdlang_functions_t* emit_functions);
+    ~~~
+
+    Populates the user-callback function table. Pass NULL to clear and not
+    generate any more callbacks.
+
+    This is the higher level user interface. The parser translates low level
+    tokens to calls into this function table.
+
+    Most functions take a `node` and `attribute` parameter. For anonymous
+    nodes, the `node` parameter is empty. For node values, the `attributes`
+    parameter is empty.
+
+    There are no explicit callbacks to begin or end a node. These events can
+    be implied by a change to the `node` parameter from one callback to the
+    next.
+#*/
+extern void sdlang_set_emit_functions(struct sdlang_functions_t* emit_functions);
 
 /*#
     ### sdlang_set_report_error

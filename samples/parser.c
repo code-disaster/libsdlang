@@ -114,6 +114,71 @@ static void emit_token(const struct sdlang_token_t* token, void* user)
     fprintf(stdout, "\n");
 }
 
+static void begin_block(const char* node, void* user)
+{
+    fprintf(stdout, "node '%s', {\n", node);
+}
+
+static void end_block(void* user)
+{
+    fprintf(stdout, "}\n");
+}
+
+static void emit_value_i32(const char* node, const char* attr, int32_t value, void* user)
+{
+    fprintf(stdout, "node '%s', attr '%s', i32=%d\n", node, attr, value);
+}
+
+static void emit_value_i64(const char* node, const char* attr, int64_t value, void* user)
+{
+    fprintf(stdout, "node '%s', attr '%s', i64=%lld\n", node, attr, value);
+}
+
+static void emit_value_i128(const char* node, const char* attr, int64_t hi, uint64_t lo, void* user)
+{
+    fprintf(stdout, "node '%s', attr '%s', i128=[hi %lld, lo=%llu]\n", node, attr, hi, lo);
+}
+
+static void emit_value_f32(const char* node, const char* attr, float value, void* user)
+{
+    fprintf(stdout, "node '%s', attr '%s', i32=%f\n", node, attr, value);
+}
+
+static void emit_value_f64(const char* node, const char* attr, double value, void* user)
+{
+    fprintf(stdout, "node '%s', attr '%s', f64=%f\n", node, attr, value);
+}
+
+static void emit_value_string(const char* node, const char* attr, const char* value, int len, void* user)
+{
+    fprintf(stdout, "node '%s', attr '%s', string '%.*s'\n", node, attr, len, value);
+}
+
+static void emit_value_base64(const char* node, const char* attr, const char* value, int len, void* user)
+{
+    fprintf(stdout, "node '%s', attr '%s', base64 [%.*s]\n", node, attr, len, value);
+}
+
+static void emit_value_u32(const char* node, const char* attr, uint32_t value, void* user)
+{
+    fprintf(stdout, "node '%s', attr '%s', u32=%u\n", node, attr, value);
+}
+
+static void emit_value_u64(const char* node, const char* attr, uint64_t value, void* user)
+{
+    fprintf(stdout, "node '%s', attr '%s', u64=%llu\n", node, attr, value);
+}
+
+static void emit_value_bool(const char* node, const char* attr, bool value, void* user)
+{
+    fprintf(stdout, "node '%s', attr '%s', bool=%s\n", node, attr, value ? "true" : "false");
+}
+
+static void emit_value_null(const char* node, const char* attr, void* user)
+{
+    fprintf(stdout, "node '%s', attr '%s', null\n", node, attr);
+}
+
 static void report_error(enum sdlang_error_t error, int line)
 {
     switch (error)
@@ -136,19 +201,50 @@ static void report_error(enum sdlang_error_t error, int line)
 int main(int argc, char* argv[])
 {
     FILE* file = stdout;
+    int mode = 0;
 
     if (argc > 1)
     {
-        file = fopen(argv[1], "rb");
+        if (argc > 2)
+        {
+            if (strcmp(argv[1], "-t") == 0)
+            {
+                mode = 1;
+            }
+        }
+
+        file = fopen(argv[argc - 1], "rb");
         
         if (file == NULL)
         {
-            fprintf(stderr, "failed to open: %s\n", argv[1]);
+            fprintf(stderr, "failed to open: %s\n", argv[argc - 1]);
             return 1;
         }
     }
 
-    sdlang_set_emit_token(emit_token);
+    if (mode == 0)
+    {
+        sdlang_set_emit_functions(&(struct sdlang_functions_t) {
+            .block_begin = begin_block,
+            .block_end = end_block,
+            .value_i32 = emit_value_i32,
+            .value_i64 = emit_value_i64,
+            .value_i128 = emit_value_i128,
+            .value_f32 = emit_value_f32,
+            .value_f64 = emit_value_f64,
+            .value_string = emit_value_string,
+            .value_base64 = emit_value_base64,
+            .value_u32 = emit_value_u32,
+            .value_u64 = emit_value_u64,
+            .value_bool = emit_value_bool,
+            .value_null = emit_value_null
+        });
+    }
+    else
+    {
+        sdlang_set_emit_token(emit_token);
+    }
+
     sdlang_set_report_error(report_error);
 
     const int result = sdlang_parse(read, file);

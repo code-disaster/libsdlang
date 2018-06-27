@@ -35,10 +35,10 @@ matrix {
 
 // Numbers
 10 +11 -12          // 32-bit integer
-10.5 +11.5 -12.5    // 64-bit float (double)
+10.5 +11.5 -12.5 -13.9e-3   // 64-bit float (double)
 10L +11L -12l       // 64-bit integer
-10BD +11bD -12Bd    // 128-bit integer
-10.5f +11.5f -12.5F // 32-bit float
+10BD +11bD -12Bd -13000111222333444555666777888999000BD   // 128-bit integer
+10.5f +11.5f -12.5F -13.9e-3f // 32-bit float
 
 // Boolean and null values
 true  // boolean true
