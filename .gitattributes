@@ -1,1 +1,2 @@
+*.sh eol=lf
 *.inl linguist-language=C

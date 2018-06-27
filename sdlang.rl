@@ -48,6 +48,7 @@
     # numeric values
     #   + supports floating point e-notation
     #   + explicitely captures trailing '+'/'-'
+    #   + 32/64 bit hexadecimal numbers
 
     float_fract = digit* '.' digit+ | digit+ '.';
     float_exp = [eE] [+\-]? digit+;
@@ -58,6 +59,9 @@
     int32 = [+\-]? ('0' | [1-9] [0-9]*);
     int64 = int32 [lL];
     int128 = int32 [bB] [dD];
+
+    hex32 = '0' [xX] [0-9a-fA-F]{1,8};
+    hex64 = '0' [xX] [0-9a-fA-F]{9,16};
 
     # base64
 
@@ -82,6 +86,9 @@
         int64 {emit(SDLANG_TOKEN_INT64, ts, te, curline, user);};
         int128 {emit(SDLANG_TOKEN_INT128, ts, te, curline, user);};
         int32 {emit(SDLANG_TOKEN_INT32, ts, te, curline, user);};
+
+        hex64 {emit(SDLANG_TOKEN_UINT64, ts, te, curline, user);};
+        hex32 {emit(SDLANG_TOKEN_UINT32, ts, te, curline, user);};
 
         kw_true {emit(SDLANG_TOKEN_TRUE, ts, te, curline, user);};
         kw_false {emit(SDLANG_TOKEN_FALSE, ts, te, curline, user);};

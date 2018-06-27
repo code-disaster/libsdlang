@@ -58,6 +58,10 @@ null  // a null value
 // Binary data (Base64 encoded)
 [sdf789GSfsb2+3324sf2]
 
+// Hex numbers
+0x1234abcd 0X12
+0xabcdef0123456789 0X12345678a
+
 /**************** block 3 **************/
 
 // C++ style

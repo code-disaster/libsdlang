@@ -85,6 +85,14 @@ static void emit_token(const struct sdlang_token_t* token, void* user)
         fprintf(stdout, "- value(base64): %.*s", len, text);
         is_attribute = false;
         break;
+    case SDLANG_TOKEN_UINT32:
+        fprintf(stdout, "- value(hex32): %.*s", len, text);
+        is_attribute = false;
+        break;
+    case SDLANG_TOKEN_UINT64:
+        fprintf(stdout, "- value(hex64): %.*s", len, text);
+        is_attribute = false;
+        break;
     case SDLANG_TOKEN_TRUE:
         fprintf(stdout, "- value: true");
         is_attribute = false;

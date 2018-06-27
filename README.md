@@ -38,6 +38,7 @@ Additionally, I've made some minor adjustments to the SDLang grammar for conveni
 - Integers and floats optionally start with a `+` sign. Also, neither the SDLang page nor the VS Code plugin for syntax highlighting care about the existence of negative numbers, so I took the liberty to allow prefixing numbers with the `-` sign, too.
 - Integer and float suffixes can be lower case, so both `1.23F` and `1.23f` are supported.
 - Floats can also be written in e-notation, for example `-2.34e-5f`.
+- 32/64-bit hexadecimal numbers, like `0x1234abcd` or `0xABCD1234FF`, are supported.
 
 Known bugs:
 
@@ -49,7 +50,6 @@ Known bugs:
 Some value formats are not implemented yet:
 
 - date/time formats
-- I'll probably add hexadecimal numbers. I like them.
 
 ### Implementation
 
