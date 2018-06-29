@@ -27,9 +27,12 @@ void sdlang_emit_token(const struct sdlang_token_t* token, void* user)
     const char* value = token->string.from;
     const int len = token->string.to - value;
 
+#define size_minus_one(dst) \
+    ((int)sizeof(vtbl->dst) - 1)
+
 #define safe_copy_value(dst) \
-    strncpy(vtbl->dst, value, min(len, sizeof(vtbl->dst) - 1)); \
-    vtbl->dst[min(len, sizeof(vtbl->dst) - 1)] = '\0'
+    strncpy(vtbl->dst, value, len < size_minus_one(dst) ? len : size_minus_one(dst)); \
+    vtbl->dst[len < size_minus_one(dst) ? len : size_minus_one(dst)] = '\0'
 
 #define safe_call(fn, params) \
     if (vtbl->fn != NULL) vtbl->fn params

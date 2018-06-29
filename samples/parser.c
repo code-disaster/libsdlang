@@ -131,12 +131,12 @@ static void emit_value_i32(const char* node, const char* attr, int32_t value, vo
 
 static void emit_value_i64(const char* node, const char* attr, int64_t value, void* user)
 {
-    fprintf(stdout, "node '%s', attr '%s', i64=%lld\n", node, attr, value);
+    fprintf(stdout, "node '%s', attr '%s', i64=%ld\n", node, attr, value);
 }
 
 static void emit_value_i128(const char* node, const char* attr, int64_t hi, uint64_t lo, void* user)
 {
-    fprintf(stdout, "node '%s', attr '%s', i128=[hi %lld, lo=%llu]\n", node, attr, hi, lo);
+    fprintf(stdout, "node '%s', attr '%s', i128=[hi %ld, lo=%lu]\n", node, attr, hi, lo);
 }
 
 static void emit_value_f32(const char* node, const char* attr, float value, void* user)
@@ -166,7 +166,7 @@ static void emit_value_u32(const char* node, const char* attr, uint32_t value, v
 
 static void emit_value_u64(const char* node, const char* attr, uint64_t value, void* user)
 {
-    fprintf(stdout, "node '%s', attr '%s', u64=%llu\n", node, attr, value);
+    fprintf(stdout, "node '%s', attr '%s', u64=%lu\n", node, attr, value);
 }
 
 static void emit_value_bool(const char* node, const char* attr, bool value, void* user)

@@ -13,6 +13,10 @@ fips_begin_lib(sdlang)
     )
 fips_end_lib()
 
+if (FIPS_GCC)
+    set_target_properties(sdlang PROPERTIES COMPILE_FLAGS "-Wno-implicit-fallthrough")
+endif()
+
 if (NOT FIPS_IMPORT)
     include_directories(.)
     fips_begin_app(parser cmdline)
