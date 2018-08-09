@@ -52,7 +52,7 @@ int sdlang_parse(size_t (*stream)(void* ptr, size_t size, void* user), void* use
             break;
         }
 
-        len = stream(p, space, user);
+        len = (int)stream(p, space, user);
         pe = p + len;
 
         if (len < space)
@@ -140,7 +140,7 @@ tr32:
 /* #line 127 "sdlang.rl" */
 	{te = p+1;{p--; {
         check_stack_size(&p, pe, top, curline);
-    {stack[top++] = 21; goto st23;}}}}
+    {stack[top++] = 21;goto st23;}}}}
 	goto st21;
 st21:
 /* #line 1 "NONE" */
@@ -264,7 +264,7 @@ tr46:
             emit(SDLANG_TOKEN_BLOCK, ts, te, curline, user);
             {
         check_stack_size(&p, pe, top, curline);
-    {stack[top++] = 23; goto st23;}}
+    {stack[top++] = 23;goto st23;}}
         }}
 	goto st23;
 tr47:
@@ -1286,7 +1286,7 @@ case 57:
         }
         else
         {
-            have = pe - ts;
+            have = (int)(pe - ts);
             SDLANG_MEMMOVE(buf, ts, have);
             te = buf + (te - ts);
             ts = buf;

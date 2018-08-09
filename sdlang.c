@@ -25,7 +25,7 @@ void sdlang_emit_token(const struct sdlang_token_t* token, void* user)
     }
 
     const char* value = token->string.from;
-    const int len = token->string.to - value;
+    const int len = (const int)(token->string.to - value);
 
 #define size_minus_one(dst) \
     ((int)sizeof(vtbl->dst) - 1)

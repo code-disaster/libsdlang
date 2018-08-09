@@ -6,6 +6,7 @@ if (NOT FIPS_IMPORT)
 endif()
 
 fips_begin_lib(sdlang)
+    fips_vs_warning_level(3)
     fips_files(
         sdlang.c
         sdlang.h
@@ -13,13 +14,18 @@ fips_begin_lib(sdlang)
     )
 fips_end_lib()
 
+if (FIPS_MSVC)
+    target_compile_definitions(sdlang PRIVATE _CRT_SECURE_NO_WARNINGS)
+endif()
+
 if (FIPS_GCC)
-    set_target_properties(sdlang PROPERTIES COMPILE_FLAGS "-Wno-implicit-fallthrough")
+    target_compile_options(sdlang PRIVATE "-Wno-implicit-fallthrough")
 endif()
 
 if (NOT FIPS_IMPORT)
     include_directories(.)
     fips_begin_app(parser cmdline)
+        fips_vs_warning_level(3)
         fips_dir(samples GROUP ".")
         fips_files(
             parser.c
@@ -27,4 +33,7 @@ if (NOT FIPS_IMPORT)
         fips_deps(sdlang)
     fips_end_app()
     fips_finish()
+    if (FIPS_MSVC)
+        target_compile_definitions(parser PRIVATE _CRT_SECURE_NO_WARNINGS)
+    endif()
 endif()

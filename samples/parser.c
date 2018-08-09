@@ -40,7 +40,7 @@ static void emit_token(const struct sdlang_token_t* token, void* user)
     }
 
     const char* text = token->string.from;
-    const int len = token->string.to - token->string.from;
+    const int len = (const int)(token->string.to - token->string.from);
 
     switch (token->type)
     {
@@ -215,7 +215,7 @@ int main(int argc, char* argv[])
         }
 
         file = fopen(argv[argc - 1], "rb");
-        
+
         if (file == NULL)
         {
             fprintf(stderr, "failed to open: %s\n", argv[argc - 1]);

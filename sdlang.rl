@@ -152,7 +152,7 @@ int sdlang_parse(size_t (*stream)(void* ptr, size_t size, void* user), void* use
             break;
         }
 
-        len = stream(p, space, user);
+        len = (int)stream(p, space, user);
         pe = p + len;
 
         if (len < space)
@@ -181,7 +181,7 @@ int sdlang_parse(size_t (*stream)(void* ptr, size_t size, void* user), void* use
         }
         else
         {
-            have = pe - ts;
+            have = (int)(pe - ts);
             SDLANG_MEMMOVE(buf, ts, have);
             te = buf + (te - ts);
             ts = buf;
