@@ -16,9 +16,11 @@ It's simple. Add `sdlang.c`, `sdlang.inl` and `sdlang.h` to your project.
 
 The provided `CMakeLists.txt` is written to be used with [fips](http://floooh.github.io/fips/index.html), *the friendly CMake wrapper*. It won't work with regular CMake.
 
+There's a Meson build script too, by courtesy of [handicraftsman](https://github.com/handicraftsman).
+
 ### Token API
 
-Have a look at `samples/parser.c`. In summary, `sdlang_parse()` takes a stream function as a parameter, and produces a series of callbacks which can be captured with `sdlang_set_emit_token()` or `sdlang_set_emit_functions`.
+Have a look at `samples/parser.c`. In summary, `sdlang_parse()` takes a stream function as a parameter, and produces a series of callbacks which can be captured with `sdlang_set_emit_token()` or `sdlang_set_emit_functions()`.
 
 You can capture error output `sdlang_set_report_error()`.
 
