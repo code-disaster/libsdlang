@@ -38,7 +38,7 @@
     # literals (node names)
 
     alnum_literal = alnum | [\.\:\-_$];
-    literal = alpha . alnum_literal* - keywords;
+    literal = '_'? . alpha . alnum_literal* - keywords;
 
     # comments
 
