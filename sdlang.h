@@ -4,7 +4,7 @@
 #include <stdbool.h>
 
 #ifndef SDLANG_PARSE_BUFFERSIZE
-# define SDLANG_PARSE_BUFFERSIZE 128
+# define SDLANG_PARSE_BUFFERSIZE 1024
 #endif
 
 #ifndef SDLANG_PARSE_STACKSIZE
